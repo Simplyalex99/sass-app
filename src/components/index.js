@@ -9,3 +9,6 @@ export {
   CardTitle,
 } from './ui/card'
 export { Footer } from './ui/footer'
+export { Input } from './ui/input'
+export { Label } from './ui/label'
+export { Icons } from './ui/icons'
