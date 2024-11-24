@@ -37,7 +37,7 @@ export const Navbar = () => {
                     </Button>
                   ) : (
                     <Button>
-                      <Link href="#" className="text-lg">
+                      <Link href="/sign-in" className="text-lg">
                         Login
                       </Link>
                     </Button>
@@ -70,7 +70,7 @@ export const Navbar = () => {
               </Button>
             ) : (
               <Button>
-                <Link href="#" className="text-lg">
+                <Link href="/sign-in" className="text-lg">
                   Login
                 </Link>
               </Button>
