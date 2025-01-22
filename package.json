@@ -1,0 +1,13 @@
+{
+  "name": "sass-app",
+  "version": "1.0.0",
+  "description": "Ref: [tutorial](https://www.youtube.com/watch?v=pWV-8PW1l2A&t=267s)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "cd ./frontend && npm run lint && cd .. && cd ./backend && npm run lint"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
