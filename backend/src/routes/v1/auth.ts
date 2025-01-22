@@ -1,5 +1,6 @@
-import express, { Response, Request, NextFunction } from 'express'
+import express, { Response, Request } from 'express'
 import { createUserByEmailController } from '#controllers'
+import { UserResponseBody } from '../../../../shared/api'
 const router = express.Router()
 
 router
@@ -7,10 +8,9 @@ router
   .post(
     (
       req: Request<{ email: string; plainTextPassword: string }>,
-      res: Response,
-      next: NextFunction
+      res: Response<UserResponseBody>
     ) => {
-      createUserByEmailController(req, res, next)
+      return createUserByEmailController(req, res)
     }
   )
 export default router
