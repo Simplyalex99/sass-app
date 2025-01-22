@@ -1,7 +1,11 @@
 import { z } from 'zod'
-import { isPasswordValid } from '#utils'
+import { isPasswordValid, isEmailValid } from '#utils'
 export const UserSchema = z.object({
-  email: z.string({ message: 'Missing required field email' }).email(),
+  email: z
+    .string({ message: 'Missing required field email' })
+    .refine(isEmailValid, {
+      message: 'Invalid email address',
+    }),
   plainTextPassword: z
     .string({ message: 'Missing required field password' })
     .refine(isPasswordValid, {
