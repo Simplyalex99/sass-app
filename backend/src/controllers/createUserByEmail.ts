@@ -1,5 +1,13 @@
-import { Request, Response, NextFunction } from 'express'
-import { REFRESH_TOKEN_KEY, AUTHORIZATION_KEY, CSRF_TOKEN_KEY } from '#enums'
+import { Request, Response } from 'express'
+import {
+  REFRESH_TOKEN_KEY,
+  AUTHORIZATION_KEY,
+  CSRF_TOKEN_KEY,
+  INTERNAL_SERVER_ERROR,
+  EMAIL_ALREADY_EXISTS,
+  REFRESH_TOKEN_EXPIRY_DATE_IN_SECONDS,
+  CRSF_TOKEN_EXPIRY_DATE_IN_SECONDS,
+} from '#enums'
 import {
   redisClient,
   userService,
@@ -7,23 +15,27 @@ import {
   UserSchemaType,
   AppError,
 } from '#lib'
+import { UserResponseBody } from '../../../shared/api'
 import {
   formatSchemaErrorMessages,
   createCsrfToken,
   createHashedCsrfToken,
   JWTUtil,
   log,
+  createCookieExpiryDateInMilliseconds,
 } from '#utils'
 
 export const createUserByEmailController = async (
   req: Request<object, object, UserSchemaType>,
-  res: Response,
-  next: NextFunction
+  res: Response<UserResponseBody>
 ) => {
   const result = UserSchema.safeParse(req.body)
+  const bodyResponse = { id: null }
   if (!result.success) {
-    const errorMessage = formatSchemaErrorMessages(result.error.issues)
-    return res.status(400).json({ error: errorMessage })
+    const invalidFieldsMessage = formatSchemaErrorMessages(result.error.issues)
+    return res
+      .status(400)
+      .json({ ...bodyResponse, error: invalidFieldsMessage })
   }
 
   const { email, plainTextPassword } = result.data
@@ -31,7 +43,9 @@ export const createUserByEmailController = async (
     const user = await userService.getUserByEmail(email)
 
     if (user.length !== 0) {
-      return res.status(400).json({ error: `Email already exists` })
+      return res
+        .status(400)
+        .json({ ...bodyResponse, error: EMAIL_ALREADY_EXISTS })
     }
 
     await userService.createUser(email, plainTextPassword)
@@ -41,9 +55,11 @@ export const createUserByEmailController = async (
       secure: true,
       sameSite: 'strict' as const,
     }
-    const cookieMaxAge = 7 * 86400
+
     res.cookie(REFRESH_TOKEN_KEY, refreshToken, {
-      expires: new Date(Date.now() + cookieMaxAge * 1000),
+      expires: createCookieExpiryDateInMilliseconds(
+        REFRESH_TOKEN_EXPIRY_DATE_IN_SECONDS
+      ),
       httpOnly: true,
       ...secureCookieOptions,
     })
@@ -55,15 +71,19 @@ export const createUserByEmailController = async (
 
     res.cookie(CSRF_TOKEN_KEY, csrfToken, {
       ...secureCookieOptions,
-      expires: new Date(Date.now() + 900 * 1000), // 15 minutes
+      expires: createCookieExpiryDateInMilliseconds(
+        CRSF_TOKEN_EXPIRY_DATE_IN_SECONDS
+      ),
     })
     return res.status(201).send({ id: email })
   } catch (err) {
-    log.error('%O', err)
     if (err instanceof Error) {
-      next(new AppError(err.message))
-      return
+      const appError = new AppError(err.message)
+      log.error('%O', appError)
     }
-    next(new AppError())
+    log.error(err)
+    return res
+      .status(500)
+      .json({ ...bodyResponse, error: INTERNAL_SERVER_ERROR })
   }
 }
