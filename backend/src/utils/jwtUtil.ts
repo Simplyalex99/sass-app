@@ -1,12 +1,11 @@
 import 'dotenv/config'
 import jwt from 'jsonwebtoken'
+import {
+  REFRESH_TOKEN_EXPIRY_DATE_IN_SECONDS,
+  ACCESS_TOKEN_EXPIRY_DATE_IN_SECONDS,
+} from '#enums'
 const JWT_ACCESS_TOKEN_SECRET = process.env.JWT_ACCESS_TOKEN_SECRET
 const JWT_REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_TOKEN_SECRET
-const SECONDS_IN_A_MINUTE = 60
-const EXPIRY_DATE_IN_MINUTES = 15
-const ACCESS_TOKEN_EXPIRY_DATE_IN_SECONDS =
-  SECONDS_IN_A_MINUTE * EXPIRY_DATE_IN_MINUTES // 900 seconds
-const REFRESH_TOKEN_EXPIRY_DATE_IN_DAYS = `30d`
 
 export class JWTUtil {
   private constructor() {
@@ -31,7 +30,7 @@ export class JWTUtil {
       )
     }
     const refreshToken = jwt.sign(data, JWT_REFRESH_TOKEN_SECRET, {
-      expiresIn: REFRESH_TOKEN_EXPIRY_DATE_IN_DAYS,
+      expiresIn: REFRESH_TOKEN_EXPIRY_DATE_IN_SECONDS,
     })
     return refreshToken
   }
