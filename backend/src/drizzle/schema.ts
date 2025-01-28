@@ -25,6 +25,15 @@ export const UserTable = pgTable('users', {
   emailIsVerified: boolean('email_is_verified').notNull().default(false),
   createdAt,
 })
+export const VerificationTokenTable = pgTable('verification_tokens', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  emailResetTokenExpires: timestamp('email_reset_token_expires'),
+  emailResetToken: text('email_reset_token'),
+  email: text('email')
+    .unique()
+    .notNull()
+    .references(() => UserTable.email, { onDelete: 'cascade' }),
+})
 
 export const UserAccountTable = pgTable('user_accounts', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -52,21 +61,18 @@ export const ThirdPartyAccountTable = pgTable('third_party_accounts', {
     .notNull()
     .references(() => UserTable.email, { onDelete: 'cascade' }),
 })
-export const ProductTable = pgTable(
-  'products',
-  {
-    id: uuid('id').primaryKey().defaultRandom(),
-    userId: text('user_id').notNull(),
-    name: text('name').notNull(),
-    url: text('url').notNull(),
-    description: text('description'),
-    createdAt,
-    updatedAt,
-  },
-  (table) => ({
-    userIdIndex: index('products.user_id_index').on(table.userId),
-  })
-)
+export const ProductTable = pgTable('products', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  email: text('email')
+    .notNull()
+    .references(() => UserTable.email, { onDelete: 'cascade' }),
+
+  name: text('name').notNull(),
+  url: text('url').notNull(),
+  description: text('description'),
+  createdAt,
+  updatedAt,
+})
 
 export const productRelations = relations(ProductTable, ({ one, many }) => ({
   productCustomization: one(ProductCustomizationTable),
@@ -204,7 +210,10 @@ export const UserSubscriptionTable = pgTable(
   'user_subscriptions',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    userId: text('user_id').notNull().unique(),
+    email: text('email')
+      .notNull()
+      .unique()
+      .references(() => UserTable.email, { onDelete: 'cascade' }),
     stripeSubscriptionItemId: text('stripe_subscription_item_id'),
     stripeSubscriptionId: text('stripe_subscription_id'),
     stripeCustomerId: text('stripe_customer_id'),
@@ -213,7 +222,6 @@ export const UserSubscriptionTable = pgTable(
     updatedAt,
   },
   (table) => ({
-    userIdIndex: index('user_subscriptions.user_id_index').on(table.userId),
     stripeCustomerIdIndex: index(
       'user_subscriptions.stripe_customer_id_index'
     ).on(table.stripeCustomerId),
