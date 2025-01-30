@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "cd ./frontend && npm run lint && cd .. && cd ./backend && npm run lint"
+    "lint": "cd ./frontend && npm run lint && cd .. && cd ./api && npm run lint"
   },
   "keywords": [],
   "author": "",
