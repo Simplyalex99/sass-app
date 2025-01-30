@@ -1,1 +1,0 @@
-export { createUserByEmailController } from './createUserByEmail'
