@@ -20,3 +20,5 @@ export {
   ACCESS_TOKEN_EXPIRY_DATE_IN_SECONDS,
   CRSF_TOKEN_EXPIRY_DATE_IN_SECONDS,
 } from './auth'
+
+export { BUSINESS_EMAIL, BUSINESS_NAME } from './socials'
