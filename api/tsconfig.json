@@ -29,7 +29,8 @@
       "#controllers": ["./src/controllers/index.ts"],
       "#database": ["./src/drizzle/database.ts"],
       "#lib": ["./src/lib/index.ts"],
-      "#utils": ["./src/utils/index.ts"]
+      "#utils": ["./src/utils/index.ts"],
+      "#types": ["./src/types/api.ts"]
     },
     /* Modules */
     "module": "commonjs" /* Specify what module code is generated. */,
