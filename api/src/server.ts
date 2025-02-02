@@ -3,7 +3,6 @@ import authRouter from './routes/v1/auth'
 import cookieParser from 'cookie-parser'
 import { connectRedis } from '#lib'
 //import { errorMiddleware } from './middlewares/errorMiddleware'
-import {} from '#enums'
 const app: Express = express()
 
 connectRedis()
