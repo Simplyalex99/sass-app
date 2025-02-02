@@ -1,7 +1,7 @@
 import express, { Response, Request } from 'express'
 import { createUserByEmailController } from '#controllers'
 import { RegisterUserSchemaType } from '#lib'
-import { RegisterUserBody } from '#types'
+import { RegisterUserBody } from '../../../../shared/api'
 
 const router = express.Router()
 

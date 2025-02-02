@@ -3,9 +3,9 @@ import request from 'supertest'
 import { v4 as uuidv4 } from 'uuid'
 import { generateRandomPassword } from './utils'
 import app from '../server'
-import { RegisterUserBody } from '#types'
 import { BASE_URL } from './enums'
 import { SuperTestResponse } from './types'
+import { RegisterUserBody } from '../../../shared/api'
 describe('auth:user:register', () => {
   const endpoint = '/register'
   const URL = `${BASE_URL}${endpoint}`
