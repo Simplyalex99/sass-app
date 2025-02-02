@@ -10,6 +10,7 @@
     "lint": "eslint . ",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "debug:all": "DEBUG=* npm run dev",
     "debug:db": "DEBUG=db:* npm run dev",
@@ -23,7 +24,8 @@
     "#database": "./src/drizzle/database.ts",
     "#controllers": "./src/controllers/index.ts",
     "#lib": "./src/lib/index.ts",
-    "#utils": "./src/utils/index.ts"
+    "#utils": "./src/utils/index.ts",
+    "#types": "./src/types/api.ts"
   },
   "keywords": [],
   "author": "",
