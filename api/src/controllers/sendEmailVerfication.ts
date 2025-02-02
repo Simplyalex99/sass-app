@@ -10,7 +10,7 @@ import {
 } from '#lib'
 import { formatSchemaErrorMessages, log, createOneTimePasscode } from '#utils'
 import { userAccountService } from 'src/lib/services/db/userAccountService'
-import { SendEmailBody } from '#types'
+import { SendEmailBody } from '../../../shared/api'
 
 export const sendEmailValidationController = async (
   req: Request<object, object, SendEmailSchemaType>,

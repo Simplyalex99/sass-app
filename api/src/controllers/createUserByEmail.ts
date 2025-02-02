@@ -14,7 +14,7 @@ import {
 } from '#lib'
 import { formatSchemaErrorMessages, log } from '#utils'
 import { userAccountService } from 'src/lib/services/db/userAccountService'
-import { RegisterUserBody } from '#types'
+import { RegisterUserBody } from '../../../shared/api'
 
 export const createUserByEmailController = async (
   req: Request<object, object, RegisterUserSchemaType>,

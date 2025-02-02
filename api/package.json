@@ -24,8 +24,7 @@
     "#database": "./src/drizzle/database.ts",
     "#controllers": "./src/controllers/index.ts",
     "#lib": "./src/lib/index.ts",
-    "#utils": "./src/utils/index.ts",
-    "#types": "./src/types/api.ts"
+    "#utils": "./src/utils/index.ts"
   },
   "keywords": [],
   "author": "",

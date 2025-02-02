@@ -1,5 +1,7 @@
-export type UserResponseBody = {
-	id: string | null;
+export type RegisterUserBody = {
     error?: string;
 };
 
+export type SendEmailBody = {
+	error?: string;
+};

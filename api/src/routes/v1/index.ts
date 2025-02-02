@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import { sendEmailValidationController } from '#controllers'
 import { SendEmailSchemaType } from '#lib'
-import { SendEmailBody } from '#types'
+import { SendEmailBody } from '../../../../shared/api'
 const router = express.Router()
 router
   .route('/email/resend')
