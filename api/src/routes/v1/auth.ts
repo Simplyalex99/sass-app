@@ -1,10 +1,8 @@
 import express, { Response, Request } from 'express'
 import { createUserByEmailController } from '#controllers'
 import { RegisterUserSchemaType } from '#lib'
+import { RegisterUserBody } from '#types'
 
-export type RegisterUserBody = {
-  error?: string
-}
 const router = express.Router()
 
 router
@@ -17,4 +15,5 @@ router
       createUserByEmailController(req, res)
     }
   )
+
 export default router

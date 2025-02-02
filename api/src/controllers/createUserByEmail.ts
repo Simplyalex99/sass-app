@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import 'dotenv/config'
 import {
   INTERNAL_SERVER_ERROR,
   EMAIL_ALREADY_EXISTS,
@@ -10,13 +11,10 @@ import {
   RegisterUserSchemaType,
   AppError,
   subscriptionService,
-  EmailService,
-  createEmailVerificationHtml,
 } from '#lib'
-import { formatSchemaErrorMessages, log, createOneTimePasscode } from '#utils'
-export type RegisterUserBody = {
-  error?: string
-}
+import { formatSchemaErrorMessages, log } from '#utils'
+import { userAccountService } from 'src/lib/services/db/userAccountService'
+import { RegisterUserBody } from '#types'
 
 export const createUserByEmailController = async (
   req: Request<object, object, RegisterUserSchemaType>,
@@ -37,22 +35,20 @@ export const createUserByEmailController = async (
       return res.status(400).json({ error: EMAIL_ALREADY_EXISTS })
     }
 
-    await userService.createUser(email, plainTextPassword)
-    await subscriptionService.createSubscription({
+    await userService.createUser(email)
+    const userAccountPromise = userAccountService.createUser(
       email,
-      tier: subscriptionTiers.Free.name,
+      plainTextPassword
+    )
+
+    const subscriptionPromise = subscriptionService.createSubscription({
+      email,
+      subscriptionTier: subscriptionTiers.Free.name,
     })
-    const emailVerificationToken = createOneTimePasscode()
-    const emailVerificationHtml = createEmailVerificationHtml(
-      emailVerificationToken
-    )
-    EmailService.getInstance().sendEmail(
-      'Acme <onboarding@resend.dev>',
-      ['alexm5492@gmail.com'],
-      'Email Testing',
-      emailVerificationHtml
-    )
-    return res.status(201)
+    await Promise.all([userAccountPromise, subscriptionPromise])
+
+    res.status(201)
+    return res.send()
   } catch (err) {
     if (err instanceof Error) {
       const appError = new AppError(err.message)
