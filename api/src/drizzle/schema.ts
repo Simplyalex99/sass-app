@@ -45,10 +45,11 @@ export const UserAccountTable = pgTable('user_accounts', {
     .references(() => UserTable.email, { onDelete: 'cascade' }),
   passwordHash: text('password_hash').notNull(),
   passwordSalt: text('password_salt').notNull(),
-  oneTimePasscode: text('one_time_passcode'),
+  oneTimePasscode: integer('one_time_passcode'),
   oneTimePasscodeExpiresAt: timestamp('one_time_passcode_expires_at'),
-  failedAttempts: integer('failed_attempts'),
+  failedAttempts: integer('failed_attempts').default(0),
   lockUntil: timestamp('lock_until'),
+  isLocked: boolean('is_locked').default(false),
 })
 
 export const ThirdPartyAccountTable = pgTable('third_party_accounts', {
@@ -207,8 +208,8 @@ export const countryGroupDiscountRelations = relations(
   })
 )
 
-export const TierEnum = pgEnum(
-  'tier',
+export const SubscriptionTierEnum = pgEnum(
+  'subscriptionTier',
   Object.keys(subscriptionTiers) as [TierNames]
 )
 
@@ -223,7 +224,7 @@ export const UserSubscriptionTable = pgTable(
     stripeSubscriptionItemId: text('stripe_subscription_item_id'),
     stripeSubscriptionId: text('stripe_subscription_id'),
     stripeCustomerId: text('stripe_customer_id'),
-    tier: TierEnum('tier').notNull(),
+    subscriptionTier: SubscriptionTierEnum('subscription_tier').notNull(),
     createdAt,
     updatedAt,
   },

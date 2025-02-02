@@ -1,3 +1,4 @@
+import { BUSINESS_NAME } from '#enums'
 export const createEmailVerificationHtml = (verificationToken: number) => {
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="ltr" lang="en">
@@ -14,7 +15,7 @@ export const createEmailVerificationHtml = (verificationToken: number) => {
   <div
     style="display:none;overflow:hidden;line-height:1px;opacity:0;max-height:0;max-width:0"
   >
-    AWS Email Verification
+    ${BUSINESS_NAME} Email Verification
     <div>
     </div>
   </div>
@@ -55,13 +56,7 @@ export const createEmailVerificationHtml = (verificationToken: number) => {
                       <tbody>
                         <tr>
                           <td>
-                            <img
-                              alt="AWS&#x27;s Logo"
-                              height="45"
-                              src="https://react-email-demo-gpxbuymeh-resend.vercel.app/static/aws-logo.png"
-                              style="display:block;outline:none;border:none;text-decoration:none"
-                              width="75"
-                            />
+                              <p style="color:white; font-size:1.8rem;">${BUSINESS_NAME}</p>
                           </td>
                         </tr>
                       </tbody>
@@ -145,7 +140,7 @@ export const createEmailVerificationHtml = (verificationToken: number) => {
                             <p
                               style="font-size:14px;line-height:24px;margin:0px;color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif"
                             >
-                              Amazon Web Services will never email you and ask
+                              ${BUSINESS_NAME} will never email you and ask
                               you to disclose or verify your password, credit
                               card, or banking account number.
                             </p>
@@ -160,9 +155,8 @@ export const createEmailVerificationHtml = (verificationToken: number) => {
             <p
               style="font-size:12px;line-height:24px;margin:24px 0;color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;padding:0 20px"
             >
-              This message was produced and distributed by Amazon Web Services,
-              Inc., 410 Terry Ave. North, Seattle, WA 98109. © 2022, Amazon Web
-              Services, Inc.. All rights reserved. AWS is a registered trademark
+              This message was produced and distributed by ${BUSINESS_NAME},
+              Inc., 410 Terry Ave. North, Seattle, WA 98109. © 2022, ${BUSINESS_NAME}, Inc.. All rights reserved. AWS is a registered trademark
               of<!-- -->
               <a
                 href="https://amazon.com"
