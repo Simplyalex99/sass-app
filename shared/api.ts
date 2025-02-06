@@ -1,7 +1,10 @@
 export type RegisterUserBody = {
-    error?: string;
+	error?: string;
 };
-
 export type SendEmailBody = {
+	error?: string;
+	message: string | null;
+};
+export type VerifyEmailBody = {
 	error?: string;
 };

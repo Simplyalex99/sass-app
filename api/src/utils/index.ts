@@ -3,6 +3,11 @@ export {
   generateHashedPassword,
   isPasswordCorrect,
 } from './helpers/passwordUtil'
+export {
+  verifyOTP,
+  createEmailVerificationRequest,
+  sendVerificationEmail,
+} from './helpers/otpUtils'
 export { isPasswordValid } from './helpers/isPasswordValidUtil'
 export { formatSchemaErrorMessages } from './helpers/formatSchemaErrorMessagesUtil'
 export { createCsrfToken, createHashedCsrfToken } from './tokens/csrfUtil'

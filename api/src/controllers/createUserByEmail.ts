@@ -20,15 +20,18 @@ export const createUserByEmailController = async (
   req: Request<object, object, RegisterUserSchemaType>,
   res: Response<RegisterUserBody>
 ) => {
-  const result = RegisterUserSchema.safeParse(req.body)
-  if (!result.success) {
-    const invalidFieldsMessage = formatSchemaErrorMessages(result.error.issues)
-    return res.status(400).json({ error: invalidFieldsMessage })
-  }
-
-  const { email, passwordForm } = result.data
-  const { plainTextPassword } = passwordForm
   try {
+    const result = RegisterUserSchema.safeParse(req.body)
+    if (!result.success) {
+      const invalidFieldsMessage = formatSchemaErrorMessages(
+        result.error.issues
+      )
+      return res.status(400).json({ error: invalidFieldsMessage })
+    }
+
+    const { email, passwordForm } = result.data
+    const { plainTextPassword } = passwordForm
+
     const user = await userService.getUserByEmail(email)
 
     if (user.length !== 0) {

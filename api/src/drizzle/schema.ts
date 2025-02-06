@@ -29,12 +29,17 @@ export const UserTable = pgTable('users', {
 
 export const VerificationTokenTable = pgTable('verification_tokens', {
   id: uuid('id').primaryKey().defaultRandom(),
-  emailResetTokenExpiresAt: timestamp('email_reset_token_expires_at'),
-  emailResetToken: text('email_reset_token'),
   email: text('email')
     .unique()
     .notNull()
     .references(() => UserTable.email, { onDelete: 'cascade' }),
+  otp: text('otp'),
+  otpExpiresAt: timestamp('otp_expires_at'),
+  failedAttempts: integer('failed_attempts').notNull().default(0),
+  lockUntil: timestamp('lock_until'),
+  failedAttemptSessions: integer('failed_attempt_sessions')
+    .notNull()
+    .default(0),
 })
 
 export const UserAccountTable = pgTable('user_accounts', {
@@ -45,11 +50,7 @@ export const UserAccountTable = pgTable('user_accounts', {
     .references(() => UserTable.email, { onDelete: 'cascade' }),
   passwordHash: text('password_hash').notNull(),
   passwordSalt: text('password_salt').notNull(),
-  oneTimePasscode: integer('one_time_passcode'),
-  oneTimePasscodeExpiresAt: timestamp('one_time_passcode_expires_at'),
-  failedAttempts: integer('failed_attempts').default(0),
-  lockUntil: timestamp('lock_until'),
-  isLocked: boolean('is_locked').default(false),
+  isLocked: boolean('is_locked').notNull().default(false),
 })
 
 export const ThirdPartyAccountTable = pgTable('third_party_accounts', {

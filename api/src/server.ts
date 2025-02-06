@@ -1,5 +1,6 @@
 import express, { Express, Response, Request } from 'express'
 import authRouter from './routes/v1/auth'
+import publicRouter from './routes/v1'
 import cookieParser from 'cookie-parser'
 import { connectRedis } from '#lib'
 //import { errorMiddleware } from './middlewares/errorMiddleware'
@@ -12,5 +13,6 @@ app.post('/', (req: Request, res: Response) => {
   res.send('Hello World!')
 })
 app.use('/api/v1', authRouter)
+app.use('/api/v1', publicRouter)
 //app.use(errorMiddleware)
 export default app

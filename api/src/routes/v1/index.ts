@@ -1,10 +1,13 @@
 import express, { Request, Response } from 'express'
-import { sendEmailValidationController } from '#controllers'
-import { SendEmailSchemaType } from '#lib'
-import { SendEmailBody } from '../../../../shared/api'
+import {
+  sendEmailValidationController,
+  verifyEmailController,
+} from '#controllers'
+import { SendEmailSchemaType, VerifyEmailSchemaType } from '#lib'
+import { SendEmailBody, VerifyEmailBody } from '../../../../shared/api'
 const router = express.Router()
 router
-  .route('/email/resend')
+  .route('/email/request')
   .post(
     (
       req: Request<object, object, SendEmailSchemaType>,
@@ -14,7 +17,16 @@ router
     }
   )
 
-router.route('/email/verify').post(() => {})
+router
+  .route('/email/verify')
+  .post(
+    (
+      req: Request<object, object, VerifyEmailSchemaType>,
+      res: Response<VerifyEmailBody>
+    ) => {
+      verifyEmailController(req, res)
+    }
+  )
 
 router.route('/auth/google/callback').post()
 
