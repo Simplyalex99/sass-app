@@ -3,7 +3,7 @@ import {
   sendEmailValidationController,
   verifyEmailController,
 } from '#controllers'
-import { SendEmailSchemaType, VerifyEmailSchemaType } from '#lib'
+import { SendEmailSchemaType, MagicLinkSchemaType } from '#lib'
 import { SendEmailBody, VerifyEmailBody } from '../../../../shared/api'
 const router = express.Router()
 router
@@ -21,7 +21,7 @@ router
   .route('/email/verify')
   .post(
     (
-      req: Request<object, object, VerifyEmailSchemaType>,
+      req: Request<object, object, MagicLinkSchemaType>,
       res: Response<VerifyEmailBody>
     ) => {
       verifyEmailController(req, res)
