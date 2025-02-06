@@ -1,5 +1,8 @@
 import { BUSINESS_NAME } from '#enums'
-export const createEmailVerificationHtml = (verificationToken: number) => {
+export const createEmailVerificationHtml = (
+  otp: string,
+  otpAtInMinutes: string
+) => {
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="ltr" lang="en">
   <head>
@@ -81,7 +84,7 @@ export const createEmailVerificationHtml = (verificationToken: number) => {
                             <p
                               style="font-size:14px;line-height:24px;margin:24px 0;color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;margin-bottom:14px"
                             >
-                              Thanks for starting the new AWS account creation
+                              Thanks for starting the new ${BUSINESS_NAME} account creation
                               process. We want to make sure it&#x27;s really
                               you. Please enter the following verification code
                               when prompted. If you don&#x27;t want to create an
@@ -107,12 +110,12 @@ export const createEmailVerificationHtml = (verificationToken: number) => {
                                     <p
                                       style="font-size:36px;line-height:24px;margin:10px 0;color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;font-weight:bold;text-align:center"
                                     >
-                                      ${verificationToken}
+                                      ${otp}
                                     </p>
                                     <p
                                       style="font-size:14px;line-height:24px;margin:0px;color:#333;font-family:-apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif;text-align:center"
                                     >
-                                      (This code is valid for 10 minutes)
+                                      (This code is valid for ${otpAtInMinutes} minutes)
                                     </p>
                                   </td>
                                 </tr>

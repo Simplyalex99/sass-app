@@ -1,4 +1,5 @@
 import { Resend } from 'resend'
+import { log } from '../../../utils/others/log'
 import 'dotenv/config'
 export class EmailService {
   private resend: Resend
@@ -17,6 +18,9 @@ export class EmailService {
       subject,
       html,
     })
+    if (response.error) {
+      log.error('%s', response.error)
+    }
     return response
   }
 }
