@@ -51,6 +51,8 @@ export const UserAccountTable = pgTable('user_accounts', {
   passwordHash: text('password_hash').notNull(),
   passwordSalt: text('password_salt').notNull(),
   isLocked: boolean('is_locked').notNull().default(false),
+  failedAttempts: integer('failed_attempts').notNull().default(0),
+  lastAttemptAt: timestamp('last_attempt_at'),
 })
 
 export const ThirdPartyAccountTable = pgTable('third_party_accounts', {

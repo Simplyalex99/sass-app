@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import { db } from '../../../drizzle/database'
 import { UserAccountTable } from '../../../drizzle/schema'
 import { generateHashedPassword } from '#utils'
@@ -24,6 +24,15 @@ export const userAccountService = {
     await db
       .update(UserAccountTable)
       .set({ isLocked })
+      .where(eq(UserAccountTable.email, email))
+  },
+  addFailedAttempt: async (email: string, lastAttemptAt: Date) => {
+    await db
+      .update(UserAccountTable)
+      .set({
+        failedAttempts: sql`${UserAccountTable.failedAttempts} + 1`,
+        lastAttemptAt,
+      })
       .where(eq(UserAccountTable.email, email))
   },
 }

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import request from 'supertest'
 import { v4 as uuidv4 } from 'uuid'
-import { generateRandomPassword } from './utils'
+import { generateRandomPassword } from '../utils/helpers/generateRandomPassword'
 import app from '../server'
 import { BASE_URL } from './enums'
 import { SuperTestResponse } from './types'
