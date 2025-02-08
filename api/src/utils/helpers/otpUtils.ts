@@ -3,17 +3,11 @@ import {
   verificationTokenService,
   EmailService,
 } from '#lib'
-import { BUSINESS_NAME } from '#enums'
+import { BUSINESS_NAME, VERIFCATION_ERROR_STATES } from '#enums'
 import { createOneTimePasscode } from '../tokens/createOneTimePasscode'
 const MAX_FAILED_ATTEMPTS = 3
 const MAX_FAILED_SESSIONS = 2
-const verificationErrorState = {
-  invalidCode: 'Invalid code',
-  locked: 'Account locked. Please contact support',
-  temporarilyLocked: (remainningMinutesLocked: number) =>
-    `Account locked. Try again later in ${remainningMinutesLocked} minutes`,
-  codeExpired: 'Code expired. Request a new one',
-}
+
 export const verifyOTP = async (
   email: string,
   oneTimePasscode: string
@@ -37,7 +31,7 @@ export const verifyOTP = async (
   if (tokenDataList.length === 0 || users.length === 0) {
     return {
       ...defaultState,
-      error: verificationErrorState.invalidCode,
+      error: VERIFCATION_ERROR_STATES.invalidCode,
     }
   }
   const user = users[0]
@@ -45,7 +39,7 @@ export const verifyOTP = async (
     return {
       ...defaultState,
       httpStatusCode: 403,
-      error: verificationErrorState.locked,
+      error: VERIFCATION_ERROR_STATES.locked,
     }
   }
   const tokenData = tokenDataList[0]
@@ -64,13 +58,15 @@ export const verifyOTP = async (
     return {
       ...defaultState,
       httpStatusCode: 401,
-      error: verificationErrorState.temporarilyLocked(remainningMinutesLocked),
+      error: VERIFCATION_ERROR_STATES.temporarilyLocked(
+        remainningMinutesLocked
+      ),
     }
   }
   if (otpExpiresAt !== null && otpExpiresAt < currentDate) {
     return {
       ...defaultState,
-      error: verificationErrorState.codeExpired,
+      error: VERIFCATION_ERROR_STATES.codeExpired,
     }
   }
 
@@ -81,7 +77,7 @@ export const verifyOTP = async (
 
   if (failedAttempts < MAX_FAILED_ATTEMPTS) {
     await verificationTokenService.penalizeFailedAttempt(email)
-    return { ...defaultState, error: verificationErrorState.invalidCode }
+    return { ...defaultState, error: VERIFCATION_ERROR_STATES.invalidCode }
   }
 
   if (failedAttemptSessions > MAX_FAILED_SESSIONS) {
@@ -94,7 +90,7 @@ export const verifyOTP = async (
     fifteenMinutesLocked
   )
 
-  return { ...defaultState, error: verificationErrorState.invalidCode }
+  return { ...defaultState, error: VERIFCATION_ERROR_STATES.invalidCode }
 }
 export const sendVerificationEmail = async (
   sender: string,
