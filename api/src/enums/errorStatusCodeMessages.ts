@@ -11,3 +11,5 @@ export const VERIFCATION_ERROR_STATES = {
   temporarilyLocked: TEMPORARILY_LOCKED,
   codeExpired: 'Code expired. Request a new one',
 }
+export const TOO_MANY_REQUEST = (remainningMinutesLocked: string) =>
+  `Too many request. Try again in ${remainningMinutesLocked}`

@@ -16,12 +16,16 @@ import {
   createHashedCsrfToken,
   mockSecureLoginAttempt,
   JWTCookieUtil,
+  getLoginTimeout,
+  formatTime,
 } from '#utils'
 import {
   INTERNAL_SERVER_ERROR,
   INVALID_LOGIN,
   ACCOUNT_LOCKED,
   EMAIL_UNVERFIED,
+  MAX_LOGIN_ATTEMPT,
+  TOO_MANY_REQUEST,
 } from '#enums'
 export const loginController = async (
   req: Request<object, object, LoginUserSchemaType>,
@@ -41,12 +45,41 @@ export const loginController = async (
       mockSecureLoginAttempt()
       return res.status(401).json({ error: INVALID_LOGIN })
     }
+
     const user = users[0]
-    const { passwordHash, passwordSalt } = user
+
+    const {
+      passwordHash,
+      passwordSalt,
+      lastAttemptAt,
+      failedAttempts,
+      isLocked,
+    } = user
+    const timeoutInSeconds = getLoginTimeout(failedAttempts)
+    const now = new Date(Date.now())
+    const currentTimeInSeconds = now.getSeconds()
+    const lastAttemptInSeconds = lastAttemptAt?.getSeconds()
+    if (isLocked) {
+      return res.status(403).json({
+        message: ACCOUNT_LOCKED,
+      })
+    }
+    if (failedAttempts > MAX_LOGIN_ATTEMPT) {
+      userAccountService.setIsLocked(email, true)
+    }
+    if (
+      failedAttempts < MAX_LOGIN_ATTEMPT &&
+      lastAttemptInSeconds !== undefined &&
+      currentTimeInSeconds - lastAttemptInSeconds < timeoutInSeconds
+    ) {
+      const formattedTimeout = formatTime(lastAttemptInSeconds)
+      const lockedUntil = TOO_MANY_REQUEST(formattedTimeout)
+      return res.status(429).json({
+        message: `Too many failed attempts. Try again in ${lockedUntil}}.`,
+      })
+    }
     if (!isPasswordCorrect(plainTextPassword, passwordHash, passwordSalt)) {
-      if (user.isLocked) {
-        return res.status(403).json({ error: ACCOUNT_LOCKED })
-      }
+      userAccountService.addFailedAttempt(email, now)
       return res.status(401).json({ error: INVALID_LOGIN })
     }
 
