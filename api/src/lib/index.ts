@@ -1,4 +1,3 @@
-export { redisClient, connectRedis } from './config/redis'
 export {
   RegisterUserSchema,
   RegisterUserSchemaType,
