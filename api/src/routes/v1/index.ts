@@ -40,7 +40,7 @@ router
     }
   )
 router
-  .route('/login')
+  .route('/sign-in')
   .post((req: Request<object, object, LoginUserSchemaType>, res) => {
     loginController(req, res)
   })
