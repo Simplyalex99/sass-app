@@ -24,7 +24,8 @@
     "#database": "./src/drizzle/database.ts",
     "#controllers": "./src/controllers/index.ts",
     "#lib": "./src/lib/index.ts",
-    "#utils": "./src/utils/index.ts"
+    "#utils": "./src/utils/index.ts",
+    "#config": "./src/config/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -55,6 +56,7 @@
     "@types/passport": "^1.0.17",
     "@types/passport-local": "^1.0.38",
     "@types/validator": "^13.12.2",
+    "@upstash/ratelimit": "^2.0.5",
     "cookie-parser": "^1.4.7",
     "debug": "^4.4.0",
     "dotenv": "^16.4.7",
