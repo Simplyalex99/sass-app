@@ -1,5 +1,6 @@
 import { z } from 'zod'
-import { isPasswordValid, isEmailValid } from '#utils'
+import { isEmailValid } from '../../utils/helpers/isEmailValid'
+import { isPasswordValid } from '../../utils/helpers/isPasswordValidUtil'
 export const RegisterUserSchema = z.object({
   email: z
     .string({ message: 'Missing required field email' })

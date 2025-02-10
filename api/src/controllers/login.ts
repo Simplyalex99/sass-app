@@ -3,10 +3,10 @@ import {
   LoginUserSchemaType,
   LoginUserSchema,
   userAccountService,
-  redisClient,
   userService,
   AppError,
 } from '#lib'
+import { redisClient } from '#config'
 import {
   formatSchemaErrorMessages,
   isPasswordCorrect,
