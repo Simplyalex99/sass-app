@@ -1,7 +1,7 @@
 import { Response, Request } from 'express'
 import {
-  LoginUserSchemaType,
-  LoginUserSchema,
+  LoginSchemaType,
+  LoginSchema,
   userAccountService,
   userService,
   AppError,
@@ -13,7 +13,7 @@ import {
   createCsrfToken,
   JWTUtil,
   log,
-  createHashedCsrfToken,
+  createHashedToken,
   mockSecureLoginAttempt,
   JWTCookieUtil,
   getLoginTimeout,
@@ -28,11 +28,11 @@ import {
   TOO_MANY_REQUEST,
 } from '#enums'
 export const loginController = async (
-  req: Request<object, object, LoginUserSchemaType>,
+  req: Request<object, object, LoginSchemaType>,
   res: Response
 ) => {
   try {
-    const result = LoginUserSchema.safeParse(req.body)
+    const result = LoginSchema.safeParse(req.body)
     if (!result.success) {
       const invalidFieldsMessage = formatSchemaErrorMessages(
         result.error.issues
@@ -55,10 +55,7 @@ export const loginController = async (
       failedAttempts,
       isLocked,
     } = user
-    const timeoutInSeconds = getLoginTimeout(failedAttempts)
     const now = new Date(Date.now())
-    const currentTimeInSeconds = now.getSeconds()
-    const lastAttemptInSeconds = lastAttemptAt?.getSeconds()
     if (isLocked) {
       return res.status(403).json({
         message: ACCOUNT_LOCKED,
@@ -67,17 +64,24 @@ export const loginController = async (
     if (failedAttempts > MAX_LOGIN_ATTEMPT) {
       userAccountService.setIsLocked(email, true)
     }
-    if (
-      failedAttempts < MAX_LOGIN_ATTEMPT &&
-      lastAttemptInSeconds !== undefined &&
-      currentTimeInSeconds - lastAttemptInSeconds < timeoutInSeconds
-    ) {
-      const formattedTimeout = formatTime(lastAttemptInSeconds)
-      const lockedUntil = TOO_MANY_REQUEST(formattedTimeout)
-      return res.status(429).json({
-        message: `Too many failed attempts. Try again in ${lockedUntil}}.`,
-      })
+    if (lastAttemptAt !== null && failedAttempts < MAX_LOGIN_ATTEMPT) {
+      const timeoutInSeconds = getLoginTimeout(failedAttempts)
+
+      const lastAttemptInMilliseconds = lastAttemptAt.getTime()
+      const currentTimeInMilliseconds = now.getTime()
+      const timeElapsedInSeconds = Math.floor(
+        (currentTimeInMilliseconds - lastAttemptInMilliseconds) / 1000
+      )
+      if (timeElapsedInSeconds < timeoutInSeconds) {
+        const remainningLockoutTime = timeoutInSeconds - timeElapsedInSeconds
+        const formattedTimeout = formatTime(remainningLockoutTime)
+        const lockedUntil = TOO_MANY_REQUEST(formattedTimeout)
+        return res.status(429).json({
+          message: `Too many failed attempts. Try again in ${lockedUntil}.`,
+        })
+      }
     }
+
     if (!isPasswordCorrect(plainTextPassword, passwordHash, passwordSalt)) {
       userAccountService.addFailedAttempt(email, now)
       return res.status(401).json({ error: INVALID_LOGIN })
@@ -95,7 +99,7 @@ export const loginController = async (
     }
 
     const csrfToken = createCsrfToken()
-    const hashedCsrfToken = createHashedCsrfToken(csrfToken)
+    const hashedCsrfToken = createHashedToken(csrfToken)
     redisClient.set(email, hashedCsrfToken, { EX: 60 })
 
     const accessToken = JWTUtil.createAccessToken({ email })
