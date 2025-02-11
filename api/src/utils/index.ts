@@ -10,7 +10,7 @@ export {
 } from './helpers/otpUtils'
 export { isPasswordValid } from './helpers/isPasswordValidUtil'
 export { formatSchemaErrorMessages } from './helpers/formatSchemaErrorMessagesUtil'
-export { createCsrfToken, createHashedCsrfToken } from './tokens/csrfUtil'
+export { createCsrfToken, createHashedToken } from './tokens/tokenUtil'
 export { log } from './others/log'
 export { JWTCookieUtil, CookieUtil } from './auth/cookieUtil'
 export { createCookieExpiryDateInMilliseconds } from './auth/createCookieExpiryDateInMilliseconds'
