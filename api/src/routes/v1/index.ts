@@ -4,54 +4,42 @@ import {
   verifyEmailController,
   loginController,
   createUserByEmailController,
+  logoutController,
 } from '#controllers'
 import {
   SendEmailSchemaType,
   MagicLinkSchemaType,
-  LoginUserSchemaType,
+  LoginSchemaType,
+  LogoutSchemaType,
   RegisterUserSchemaType,
 } from '#lib'
-import {
-  SendEmailBody,
-  VerifyEmailBody,
-  RegisterUserBody,
-} from '../../../../shared/api'
 
 const router = express.Router()
 router
   .route('/email/request')
-  .post(
-    (
-      req: Request<object, object, SendEmailSchemaType>,
-      res: Response<SendEmailBody>
-    ) => {
-      sendEmailValidationController(req, res)
-    }
-  )
-
-router
-  .route('/email/verify')
-  .post(
-    (
-      req: Request<object, object, MagicLinkSchemaType>,
-      res: Response<VerifyEmailBody>
-    ) => {
-      verifyEmailController(req, res)
-    }
-  )
-router
-  .route('/sign-in')
-  .post((req: Request<object, object, LoginUserSchemaType>, res) => {
-    loginController(req, res)
+  .post((req: Request<object, object, SendEmailSchemaType>, res: Response) => {
+    sendEmailValidationController(req, res)
   })
 
 router
+  .route('/email/verify')
+  .post((req: Request<object, object, MagicLinkSchemaType>, res: Response) => {
+    verifyEmailController(req, res)
+  })
+router
+  .route('/sign-in')
+  .post((req: Request<object, object, LoginSchemaType>, res: Response) => {
+    loginController(req, res)
+  })
+router
+  .route('/sign-out')
+  .post((req: Request<object, object, LogoutSchemaType>, res: Response) => {
+    logoutController(req, res)
+  })
+router
   .route('/register')
   .post(
-    (
-      req: Request<object, object, RegisterUserSchemaType>,
-      res: Response<RegisterUserBody>
-    ) => {
+    (req: Request<object, object, RegisterUserSchemaType>, res: Response) => {
       createUserByEmailController(req, res)
     }
   )
