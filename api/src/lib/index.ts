@@ -2,7 +2,8 @@ export {
   RegisterUserSchema,
   RegisterUserSchemaType,
 } from './schemas/registerUserSchema'
-export { LoginUserSchema, LoginUserSchemaType } from './schemas/loginUserSchema'
+export { LoginUserSchema, LoginUserSchemaType } from './schemas/loginSchema'
+export { LogoutSchema, LogoutSchemaType } from './schemas/logoutSchema'
 export { SendEmailSchema, SendEmailSchemaType } from './schemas/sendEmailSchema'
 export { MagicLinkSchema, MagicLinkSchemaType } from './schemas/magicLinkSchema'
 export { userService } from './services/db/userService'

@@ -1,12 +1,8 @@
 import { createClient } from 'redis'
 import 'dotenv/config'
+const REDIS_CLOUD_URL = process.env.REDIS_CLOUD_URL || ''
 const redisClient = createClient({
-  username: process.env.REDIS_CLOUD_USERNAME || '',
-  password: process.env.REDIS_CLOUD_PASSWORD || '',
-  socket: {
-    host: process.env.REDIS_CLOUD_HOST || 'localhost',
-    port: 18795,
-  },
+  url: REDIS_CLOUD_URL,
 })
 
 redisClient.on('error', (err) => {
