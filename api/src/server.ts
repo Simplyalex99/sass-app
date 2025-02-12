@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import { connectRedis } from '#config'
 import { errorMiddleware } from './middlewares/errorMiddleware'
 import { rateLimiterMiddleware } from './middlewares/rateLimiterMiddleware'
+import { loggerMiddleware } from './middlewares/loggerMiddleware'
 const app: Express = express()
 
 connectRedis()
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(rateLimiterMiddleware)
 app.use('/api/v1', publicRouter)
 app.use('/api/v1', authRouter)
+app.use(loggerMiddleware)
 app.use(errorMiddleware)
 
 export default app

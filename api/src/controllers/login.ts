@@ -1,10 +1,9 @@
-import { Response, Request } from 'express'
+import { Response, Request, NextFunction } from 'express'
 import {
   LoginSchemaType,
   LoginSchema,
   userAccountService,
   userService,
-  AppError,
 } from '#lib'
 import { redisClient } from '#config'
 import {
@@ -12,7 +11,6 @@ import {
   isPasswordCorrect,
   createCsrfToken,
   JWTUtil,
-  log,
   createHashedToken,
   mockSecureLoginAttempt,
   JWTCookieUtil,
@@ -29,7 +27,8 @@ import {
 } from '#enums'
 export const loginController = async (
   req: Request<object, object, LoginSchemaType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     const result = LoginSchema.safeParse(req.body)
@@ -108,11 +107,6 @@ export const loginController = async (
     jwtUtilCookie.saveCookie(res, [accessToken, refreshToken])
     return res.status(200).send({ csrfToken, email, isEmailVerified: true })
   } catch (err) {
-    if (err instanceof Error) {
-      const appError = new AppError(err.message)
-      log.error('%O', appError)
-    }
-    log.error(err)
-    return res.status(500).json({ error: INTERNAL_SERVER_ERROR })
+    next(err)
   }
 }

@@ -1,24 +1,20 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import 'dotenv/config'
-import {
-  INTERNAL_SERVER_ERROR,
-  EMAIL_ALREADY_EXISTS,
-  subscriptionTiers,
-} from '#enums'
+import { EMAIL_ALREADY_EXISTS, subscriptionTiers } from '#enums'
 import {
   userService,
   RegisterUserSchema,
   RegisterUserSchemaType,
-  AppError,
   subscriptionService,
 } from '#lib'
-import { formatSchemaErrorMessages, log } from '#utils'
+import { formatSchemaErrorMessages } from '#utils'
 import { userAccountService } from 'src/lib/services/db/userAccountService'
 import { RegisterUserBody } from '../../../shared/api'
 
 export const createUserByEmailController = async (
   req: Request<object, object, RegisterUserSchemaType>,
-  res: Response<RegisterUserBody>
+  res: Response<RegisterUserBody>,
+  next: NextFunction
 ) => {
   try {
     const result = RegisterUserSchema.safeParse(req.body)
@@ -53,11 +49,6 @@ export const createUserByEmailController = async (
     res.status(201)
     return res.send()
   } catch (err) {
-    if (err instanceof Error) {
-      const appError = new AppError(err.message)
-      log.error('%O', appError)
-    }
-    log.error(err)
-    return res.status(500).json({ error: INTERNAL_SERVER_ERROR })
+    next(err)
   }
 }

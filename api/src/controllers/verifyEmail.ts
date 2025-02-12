@@ -1,17 +1,12 @@
-import { Request, Response } from 'express'
-import {
-  MagicLinkSchema,
-  MagicLinkSchemaType,
-  userService,
-  AppError,
-} from '#lib'
-import { formatSchemaErrorMessages, verifyOTP, log } from '#utils'
-import { INTERNAL_SERVER_ERROR } from '#enums'
+import { NextFunction, Request, Response } from 'express'
+import { MagicLinkSchema, MagicLinkSchemaType, userService } from '#lib'
+import { formatSchemaErrorMessages, verifyOTP } from '#utils'
 import { VerifyEmailBody } from '../../../shared/api'
 
 export const verifyEmailController = async (
   req: Request<object, object, MagicLinkSchemaType>,
-  res: Response<VerifyEmailBody>
+  res: Response<VerifyEmailBody | undefined>,
+  next: NextFunction
 ) => {
   try {
     const result = MagicLinkSchema.safeParse(req.body)
@@ -33,11 +28,6 @@ export const verifyEmailController = async (
     userService.addIsVerified(email)
     return res.status(httpStatusCode).send()
   } catch (err) {
-    if (err instanceof Error) {
-      const appError = new AppError(err.message)
-      log.error('%O', appError)
-    }
-    log.error(err)
-    return res.status(500).json({ error: INTERNAL_SERVER_ERROR })
+    next(err)
   }
 }

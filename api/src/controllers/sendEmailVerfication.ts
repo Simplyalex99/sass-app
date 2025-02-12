@@ -1,15 +1,13 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import 'dotenv/config'
-import { INTERNAL_SERVER_ERROR, BUSINESS_EMAIL } from '#enums'
+import { BUSINESS_EMAIL } from '#enums'
 import {
-  AppError,
   createEmailVerificationHtml,
   SendEmailSchema,
   SendEmailSchemaType,
 } from '#lib'
 import {
   formatSchemaErrorMessages,
-  log,
   createEmailVerificationRequest,
   sendVerificationEmail,
 } from '#utils'
@@ -18,7 +16,8 @@ import { SendEmailBody } from '../../../shared/api'
 
 export const sendEmailValidationController = async (
   req: Request<object, object, SendEmailSchemaType>,
-  res: Response<SendEmailBody>
+  res: Response<SendEmailBody | undefined>,
+  next: NextFunction
 ) => {
   try {
     if (!BUSINESS_EMAIL) {
@@ -50,11 +49,6 @@ export const sendEmailValidationController = async (
         'A one-time passcode to activate your account has been emailed to the address provided.',
     })
   } catch (err) {
-    if (err instanceof Error) {
-      const appError = new AppError(err.message)
-      log.error('%O', appError)
-    }
-    log.error(err)
-    return res.status(500).json({ error: INTERNAL_SERVER_ERROR, message: null })
+    next(err)
   }
 }
