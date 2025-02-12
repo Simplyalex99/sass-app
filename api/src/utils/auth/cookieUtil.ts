@@ -71,14 +71,14 @@ export class JWTCookieUtil extends CookieUtil {
       maxAge: 0,
     })
   }
-  readCookie(req: Request) {
+  readCookie(req: Request<object, object, unknown>) {
     const cookies = req?.cookies
 
     if (!cookies) {
       return undefined
     }
-    const refreshToken = cookies[REFRESH_TOKEN_KEY]
-    const accessToken = cookies[ACCESS_TOKEN_KEY]
+    const refreshToken = cookies[REFRESH_TOKEN_KEY] as string
+    const accessToken = cookies[ACCESS_TOKEN_KEY] as string
     return [accessToken, refreshToken]
   }
 }
