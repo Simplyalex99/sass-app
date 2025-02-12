@@ -5,7 +5,10 @@ import {
   JWTCookieUtil,
   createHashedToken,
 } from '#utils'
-import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from '#enums'
+import {
+  REFRESH_TOKEN_EXPIRY_DATE_IN_SECONDS,
+  ACCESS_TOKEN_EXPIRY_DATE_IN_SECONDS,
+} from '#enums'
 import { redisClient } from '#config'
 
 export const logoutController = async (
@@ -28,13 +31,15 @@ export const logoutController = async (
     }
     jwtCookieUtil.clearCookie(res)
     const [accessToken, refreshToken] = tokens
-    const { email } = result.data
     const hashedAccessToken = createHashedToken(accessToken)
     const hashedRefreshToken = createHashedToken(refreshToken)
-    const whitelist = `${email}${ACCESS_TOKEN_KEY}`
-    const blacklist = `${email}${REFRESH_TOKEN_KEY}`
-    redisClient.rPush(whitelist, hashedAccessToken)
-    redisClient.rPush(blacklist, hashedRefreshToken)
+
+    redisClient.set(hashedRefreshToken, 'blacklist', {
+      EX: REFRESH_TOKEN_EXPIRY_DATE_IN_SECONDS,
+    })
+    redisClient.set(hashedAccessToken, 'whitelist', {
+      EX: ACCESS_TOKEN_EXPIRY_DATE_IN_SECONDS,
+    })
     return res.status(200).send()
   } catch (err) {
     next(err)
