@@ -7,7 +7,6 @@ export const loggerMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  log.debug('made it here')
   if (err instanceof Error && err.stack) {
     log.error('%O', err)
   }
