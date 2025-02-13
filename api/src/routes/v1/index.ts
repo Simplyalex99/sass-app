@@ -4,13 +4,11 @@ import {
   verifyEmailController,
   loginController,
   createUserByEmailController,
-  logoutController,
 } from '#controllers'
 import {
   SendEmailSchemaType,
   MagicLinkSchemaType,
   LoginSchemaType,
-  LogoutSchemaType,
   RegisterUserSchemaType,
 } from '#lib'
 import { errorMiddleware } from 'src/middlewares/errorMiddleware'
@@ -48,17 +46,6 @@ router
       next: NextFunction
     ) => {
       loginController(req, res, next)
-    }
-  )
-router
-  .route('/sign-out')
-  .post(
-    (
-      req: Request<object, object, LogoutSchemaType>,
-      res: Response,
-      next: NextFunction
-    ) => {
-      logoutController(req, res, next)
     }
   )
 router
