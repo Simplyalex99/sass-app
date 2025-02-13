@@ -1,5 +1,7 @@
 import express, { Response, NextFunction, Request } from 'express'
 import { authMiddleware } from '../../middlewares/auth'
+import { errorMiddleware } from '../../middlewares/error'
+import { loggerMiddleware } from '../../middlewares/logger'
 import { logoutController } from '#controllers'
 import { AuthSchemaType } from '#lib'
 const router = express.Router()
@@ -16,4 +18,6 @@ router
       logoutController(req, res, next)
     }
   )
+router.use(loggerMiddleware)
+router.use(errorMiddleware)
 export default router
