@@ -1,5 +1,6 @@
 export { JWTUtil } from './auth/jwt'
 export { InvalidateJwtUtil } from './auth/invalidateJwt'
+export { CsrfUtil } from './auth/csrf'
 export { generateHashedPassword, isPasswordCorrect } from './helpers/password'
 export {
   verifyOTP,

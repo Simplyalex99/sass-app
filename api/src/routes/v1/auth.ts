@@ -1,7 +1,7 @@
 import express, { Response, NextFunction, Request } from 'express'
 import { authMiddleware } from '../../middlewares/auth'
 import { logoutController } from '#controllers'
-import { EmailSchemaType } from '#lib'
+import { AuthSchemaType } from '#lib'
 const router = express.Router()
 
 router.use(authMiddleware)
@@ -9,7 +9,7 @@ router
   .route('/sign-out')
   .post(
     (
-      req: Request<object, object, EmailSchemaType>,
+      req: Request<object, object, AuthSchemaType>,
       res: Response,
       next: NextFunction
     ) => {
