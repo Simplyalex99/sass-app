@@ -52,6 +52,7 @@ export class JWTCookieUtil extends CookieUtil {
         REFRESH_TOKEN_EXPIRY_DATE_IN_SECONDS
       ),
       httpOnly: true,
+      path: '/refresh',
       ...secureCookieOptions,
     })
     res.cookie(ACCESS_TOKEN_KEY, accessToken, {
