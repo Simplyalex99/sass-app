@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { LogoutSchemaType, LogoutSchema } from '#lib'
+import { EmailSchema, EmailSchemaType } from '#lib'
 import {
   formatSchemaErrorMessages,
   JWTCookieUtil,
@@ -12,12 +12,12 @@ import {
 import { redisClient } from '#config'
 
 export const logoutController = async (
-  req: Request<object, object, LogoutSchemaType>,
+  req: Request<object, object, EmailSchemaType>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const result = LogoutSchema.safeParse(req.body)
+    const result = EmailSchema.safeParse(req.body)
     if (!result.success) {
       const invalidFieldsMessage = formatSchemaErrorMessages(
         result.error.issues
@@ -26,11 +26,16 @@ export const logoutController = async (
     }
     const jwtCookieUtil = new JWTCookieUtil()
     const tokens = jwtCookieUtil.readCookie(req)
+
     if (tokens === undefined) {
-      return res.status(200).send()
+      return res.status(401).send()
+    }
+    const [accessToken, refreshToken] = tokens
+    if (accessToken === null || refreshToken === null) {
+      return res.status(401).send()
     }
     jwtCookieUtil.clearCookie(res)
-    const [accessToken, refreshToken] = tokens
+
     const hashedAccessToken = createHashedToken(accessToken)
     const hashedRefreshToken = createHashedToken(refreshToken)
 
