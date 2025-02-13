@@ -4,12 +4,8 @@ import {
   formatSchemaErrorMessages,
   JWTCookieUtil,
   createHashedToken,
+  InvalidateJwtUtil,
 } from '#utils'
-import {
-  REFRESH_TOKEN_EXPIRY_DATE_IN_SECONDS,
-  ACCESS_TOKEN_EXPIRY_DATE_IN_SECONDS,
-} from '#enums'
-import { redisClient } from '#config'
 
 export const logoutController = async (
   req: Request<object, object, EmailSchemaType>,
@@ -39,12 +35,8 @@ export const logoutController = async (
     const hashedAccessToken = createHashedToken(accessToken)
     const hashedRefreshToken = createHashedToken(refreshToken)
 
-    redisClient.set(hashedRefreshToken, 'blacklist', {
-      EX: REFRESH_TOKEN_EXPIRY_DATE_IN_SECONDS,
-    })
-    redisClient.set(hashedAccessToken, 'whitelist', {
-      EX: ACCESS_TOKEN_EXPIRY_DATE_IN_SECONDS,
-    })
+    InvalidateJwtUtil.blacklistRefreshToken(hashedRefreshToken)
+    InvalidateJwtUtil.blacklistAccessToken(hashedAccessToken)
     return res.status(200).send()
   } catch (err) {
     next(err)
