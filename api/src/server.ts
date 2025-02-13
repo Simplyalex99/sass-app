@@ -3,9 +3,9 @@ import authRouter from './routes/v1/auth'
 import publicRouter from './routes/v1'
 import cookieParser from 'cookie-parser'
 import { connectRedis } from '#config'
-import { errorMiddleware } from './middlewares/errorMiddleware'
-import { rateLimiterMiddleware } from './middlewares/rateLimiterMiddleware'
-import { loggerMiddleware } from './middlewares/loggerMiddleware'
+import { errorMiddleware } from './middlewares/error'
+import { rateLimiterMiddleware } from './middlewares/rateLimiter'
+import { loggerMiddleware } from './middlewares/logger'
 const app: Express = express()
 
 connectRedis()
