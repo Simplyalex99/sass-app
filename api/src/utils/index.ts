@@ -1,16 +1,13 @@
-export { JWTUtil } from './auth/jwtUtil'
-export {
-  generateHashedPassword,
-  isPasswordCorrect,
-} from './helpers/passwordUtil'
+export { JWTUtil } from './auth/jwt'
+export { generateHashedPassword, isPasswordCorrect } from './helpers/password'
 export {
   verifyOTP,
   createEmailVerificationRequest,
   sendVerificationEmail,
-} from './helpers/otpUtils'
-export { isPasswordValid } from './helpers/isPasswordValidUtil'
+} from './helpers/otp'
+export { isPasswordValid } from './helpers/isPasswordValid'
 export { formatSchemaErrorMessages } from './helpers/formatSchemaErrorMessagesUtil'
-export { createCsrfToken, createHashedToken } from './tokens/tokenUtil'
+export { createCsrfToken, createHashedToken } from './tokens/token'
 export { log } from './others/log'
 export { JWTCookieUtil, CookieUtil } from './auth/cookieUtil'
 export { createCookieExpiryDateInMilliseconds } from './auth/createCookieExpiryDateInMilliseconds'

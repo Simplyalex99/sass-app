@@ -1,4 +1,4 @@
-import { isPasswordCorrect } from './passwordUtil'
+import { isPasswordCorrect } from './password'
 import { generateRandomSalt } from './generateRandomSalt'
 import { generateRandomPassword } from './generateRandomPassword'
 export const mockSecureLoginAttempt = () => {
