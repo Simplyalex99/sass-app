@@ -4,12 +4,14 @@ import {
   verifyEmailController,
   loginController,
   createUserByEmailController,
+  refreshTokenController,
 } from '#controllers'
 import {
   SendEmailSchemaType,
   MagicLinkSchemaType,
   LoginSchemaType,
   RegisterUserSchemaType,
+  EmailSchemaType,
 } from '#lib'
 import { errorMiddleware } from 'src/middlewares/error'
 import { loggerMiddleware } from 'src/middlewares/logger'
@@ -57,6 +59,17 @@ router
       next: NextFunction
     ) => {
       createUserByEmailController(req, res, next)
+    }
+  )
+router
+  .route('/refresh')
+  .post(
+    (
+      req: Request<object, object, EmailSchemaType>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      refreshTokenController(req, res, next)
     }
   )
 
