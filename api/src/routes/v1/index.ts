@@ -11,8 +11,8 @@ import {
   LoginSchemaType,
   RegisterUserSchemaType,
 } from '#lib'
-import { errorMiddleware } from 'src/middlewares/errorMiddleware'
-import { loggerMiddleware } from 'src/middlewares/loggerMiddleware'
+import { errorMiddleware } from 'src/middlewares/error'
+import { loggerMiddleware } from 'src/middlewares/logger'
 const router = express.Router()
 router
   .route('/email/request')

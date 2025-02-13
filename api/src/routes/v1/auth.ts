@@ -1,5 +1,5 @@
 import express, { Response, NextFunction, Request } from 'express'
-import { authMiddleware } from '../../middlewares/authMiddleware'
+import { authMiddleware } from '../../middlewares/auth'
 import { logoutController } from '#controllers'
 import { LogoutSchemaType } from '#lib'
 const router = express.Router()
