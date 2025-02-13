@@ -24,6 +24,7 @@ import {
   EMAIL_UNVERFIED,
   MAX_LOGIN_ATTEMPT,
   TOO_MANY_REQUEST,
+  CRSF_TOKEN_EXPIRY_DATE_IN_SECONDS,
 } from '#enums'
 export const loginController = async (
   req: Request<object, object, LoginSchemaType>,
@@ -99,7 +100,9 @@ export const loginController = async (
 
     const csrfToken = createCsrfToken()
     const hashedCsrfToken = createHashedToken(csrfToken)
-    redisClient.set(email, hashedCsrfToken, { EX: 60 })
+    redisClient.set(email, hashedCsrfToken, {
+      EX: CRSF_TOKEN_EXPIRY_DATE_IN_SECONDS,
+    })
 
     const accessToken = JWTUtil.createAccessToken({ email })
     const refreshToken = JWTUtil.createRefreshToken({ email })
