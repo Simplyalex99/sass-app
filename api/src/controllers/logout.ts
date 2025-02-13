@@ -1,24 +1,31 @@
 import { NextFunction, Request, Response } from 'express'
-import { EmailSchema, EmailSchemaType } from '#lib'
+import { AuthSchema, AuthSchemaType } from '#lib'
 import {
   formatSchemaErrorMessages,
   JWTCookieUtil,
   createHashedToken,
   InvalidateJwtUtil,
+  CsrfUtil,
 } from '#utils'
 
 export const logoutController = async (
-  req: Request<object, object, EmailSchemaType>,
+  req: Request<object, object, AuthSchemaType>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const result = EmailSchema.safeParse(req.body)
+    const result = AuthSchema.safeParse(req.body)
     if (!result.success) {
       const invalidFieldsMessage = formatSchemaErrorMessages(
         result.error.issues
       )
       return res.status(400).json({ error: invalidFieldsMessage })
+    }
+    const { email, csrf } = result.data
+    const hashedCsrf = createHashedToken(csrf)
+    const isTokenValid = await CsrfUtil.isTokenValid(email, hashedCsrf)
+    if (!isTokenValid) {
+      return res.status(401).send()
     }
     const jwtCookieUtil = new JWTCookieUtil()
     const tokens = jwtCookieUtil.readCookie(req)

@@ -4,6 +4,7 @@ export {
 } from './schemas/registerUser'
 export { LoginSchema, LoginSchemaType } from './schemas/login'
 export { EmailSchema, EmailSchemaType } from './schemas/email'
+export { AuthSchema, AuthSchemaType } from './schemas/auth'
 export { SendEmailSchema, SendEmailSchemaType } from './schemas/sendEmail'
 export { MagicLinkSchema, MagicLinkSchemaType } from './schemas/magicLink'
 export { userService } from './services/db/user'
