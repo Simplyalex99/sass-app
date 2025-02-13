@@ -30,7 +30,7 @@ export class CookieUtil {
     throw new Error("Method 'clearCookie()' must be implemented.")
   }
   // @typescript-eslint/no-unused-vars
-  readCookie(req: Request): string[] | undefined {
+  readCookie(req: Request): Array<string | null> | undefined {
     throw new Error("Method 'readCookie()' must be implemented.")
   }
 }
@@ -77,8 +77,8 @@ export class JWTCookieUtil extends CookieUtil {
     if (!cookies) {
       return undefined
     }
-    const refreshToken = cookies[REFRESH_TOKEN_KEY] as string
-    const accessToken = cookies[ACCESS_TOKEN_KEY] as string
-    return [accessToken, refreshToken]
+    const refreshToken = cookies[REFRESH_TOKEN_KEY]
+    const accessToken = cookies[ACCESS_TOKEN_KEY]
+    return [accessToken, refreshToken] as Array<string | null>
   }
 }
