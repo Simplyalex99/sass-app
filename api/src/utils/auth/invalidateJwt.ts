@@ -14,7 +14,7 @@ export class InvalidateJwtUtil {
       EX: REFRESH_TOKEN_EXPIRY_DATE_IN_SECONDS,
     })
   }
-  static whitelistAccessToken(hashedAccessToken: string) {
+  static blacklistAccessToken(hashedAccessToken: string) {
     return redisClient.set(hashedAccessToken, 'whitelist', {
       EX: ACCESS_TOKEN_EXPIRY_DATE_IN_SECONDS,
     })
