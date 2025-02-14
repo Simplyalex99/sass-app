@@ -19,4 +19,7 @@ export class InvalidateJwtUtil {
       EX: ACCESS_TOKEN_EXPIRY_DATE_IN_SECONDS,
     })
   }
+  static getInvalidToken(hashedToken: string) {
+    return redisClient.get(hashedToken)
+  }
 }

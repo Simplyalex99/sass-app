@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { ACCESS_TOKEN_KEY } from '#enums'
-import { JWTUtil, createHashedToken } from '#utils'
-import { redisClient } from '#config'
+import { JWTUtil, createHashedToken, InvalidateJwtUtil } from '#utils'
 
 export const authMiddleware = async (
   req: Request,
@@ -21,10 +20,13 @@ export const authMiddleware = async (
     }
 
     JWTUtil.verifyAccessToken(accessToken)
-    const hashedToken = createHashedToken(accessToken)
-    const whiteListedToken = await redisClient.get(hashedToken)
-    if (whiteListedToken !== null) {
+    const hashedAccessToken = createHashedToken(accessToken)
+
+    const invalidAccessToken =
+      await InvalidateJwtUtil.getInvalidToken(hashedAccessToken)
+    if (invalidAccessToken !== null) {
       res.status(401).send()
+      return
     }
     next()
   } catch (err) {
