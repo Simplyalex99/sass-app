@@ -30,6 +30,13 @@ export const refreshTokenController = async (
     if (refreshToken === null) {
       return res.status(401).send()
     }
+    const hashedRefreshToken = createHashedToken(refreshToken)
+    const invalidRefreshToken =
+      await InvalidateJwtUtil.getInvalidToken(hashedRefreshToken)
+    if (invalidRefreshToken !== null) {
+      res.status(401).send()
+      return
+    }
     JWTUtil.verifyRefreshToken(refreshToken)
     const newAccessToken = JWTUtil.createAccessToken({ email })
     const newRefreshToken = JWTUtil.createRefreshToken({ email })
