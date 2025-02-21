@@ -18,7 +18,6 @@ import {
   formatTime,
 } from '#utils'
 import {
-  INTERNAL_SERVER_ERROR,
   INVALID_LOGIN,
   ACCOUNT_LOCKED,
   EMAIL_UNVERFIED,
@@ -40,21 +39,22 @@ export const loginController = async (
       return res.status(400).json({ error: invalidFieldsMessage })
     }
     const { email, plainTextPassword } = result.data
-    const users = await userAccountService.getUserByEmail(email)
-    if (users.length === 0) {
+
+    const services = await Promise.all([
+      userAccountService.getUserByEmail(email),
+      userService.getUserByEmail(email),
+    ])
+    const userAccounts = services[0]
+    const userData = services[1]
+    if (userAccounts.length === 0 || userData.length === 0) {
       mockSecureLoginAttempt()
       return res.status(401).json({ error: INVALID_LOGIN })
     }
 
-    const user = users[0]
-
-    const {
-      passwordHash,
-      passwordSalt,
-      lastAttemptAt,
-      failedAttempts,
-      isLocked,
-    } = user
+    const userAccount = userAccounts[0]
+    const { isLocked, emailIsVerified } = userData[0]
+    const { passwordHash, passwordSalt, lastAttemptAt, failedAttempts } =
+      userAccount
     const now = new Date(Date.now())
     if (isLocked) {
       return res.status(403).json({
@@ -62,7 +62,7 @@ export const loginController = async (
       })
     }
     if (failedAttempts > MAX_LOGIN_ATTEMPT) {
-      userAccountService.setIsLocked(email, true)
+      userService.setIsLocked(email, true)
     }
     if (lastAttemptAt !== null && failedAttempts < MAX_LOGIN_ATTEMPT) {
       const timeoutInSeconds = getLoginTimeout(failedAttempts)
@@ -86,13 +86,7 @@ export const loginController = async (
       userAccountService.addFailedAttempt(email, now)
       return res.status(401).json({ error: INVALID_LOGIN })
     }
-
-    const userAccountData = await userService.getUserByEmail(email)
-    if (userAccountData.length === 0) {
-      return res.status(500).json({ error: INTERNAL_SERVER_ERROR })
-    }
-    const userAccount = userAccountData[0]
-    if (!userAccount.emailIsVerified) {
+    if (!emailIsVerified) {
       return res
         .status(200)
         .json({ error: EMAIL_UNVERFIED, isEmailVerified: false })

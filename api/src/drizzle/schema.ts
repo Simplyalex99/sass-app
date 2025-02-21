@@ -25,6 +25,7 @@ export const UserTable = pgTable('users', {
   emailVerified: timestamp('email_verified'),
   emailIsVerified: boolean('email_is_verified').notNull().default(false),
   createdAt,
+  isLocked: boolean('is_locked').notNull().default(false),
 })
 
 export const VerificationTokenTable = pgTable('verification_tokens', {
@@ -47,12 +48,19 @@ export const UserAccountTable = pgTable('user_accounts', {
   email: text('email')
     .unique()
     .notNull()
-    .references(() => UserTable.email, { onDelete: 'cascade' }),
+    .references(() => UserTable.email, {
+      onUpdate: 'cascade',
+      onDelete: 'cascade',
+    }),
   passwordHash: text('password_hash').notNull(),
   passwordSalt: text('password_salt').notNull(),
-  isLocked: boolean('is_locked').notNull().default(false),
   failedAttempts: integer('failed_attempts').notNull().default(0),
   lastAttemptAt: timestamp('last_attempt_at'),
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => UserTable.id, {
+      onDelete: 'cascade',
+    }),
 })
 
 export const ThirdPartyAccountTable = pgTable('third_party_accounts', {
@@ -69,14 +77,23 @@ export const ThirdPartyAccountTable = pgTable('third_party_accounts', {
   email: text('email')
     .unique()
     .notNull()
-    .references(() => UserTable.email, { onDelete: 'cascade' }),
+    .references(() => UserTable.email, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    }),
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => UserTable.id, {
+      onDelete: 'cascade',
+    }),
 })
 export const ProductTable = pgTable('products', {
   id: uuid('id').primaryKey().defaultRandom(),
-  email: text('email')
+  userId: uuid('user_id')
     .notNull()
-    .references(() => UserTable.email, { onDelete: 'cascade' }),
-
+    .references(() => UserTable.id, {
+      onDelete: 'cascade',
+    }),
   name: text('name').notNull(),
   url: text('url').notNull(),
   description: text('description'),
@@ -212,7 +229,7 @@ export const countryGroupDiscountRelations = relations(
 )
 
 export const SubscriptionTierEnum = pgEnum(
-  'subscriptionTier',
+  'subscriptionType',
   Object.keys(subscriptionTiers) as [TierNames]
 )
 
@@ -223,11 +240,19 @@ export const UserSubscriptionTable = pgTable(
     email: text('email')
       .notNull()
       .unique()
-      .references(() => UserTable.email, { onDelete: 'cascade' }),
+      .references(() => UserTable.email, {
+        onDelete: 'cascade',
+        onUpdate: 'cascade',
+      }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => UserTable.id, {
+        onDelete: 'cascade',
+      }),
     stripeSubscriptionItemId: text('stripe_subscription_item_id'),
     stripeSubscriptionId: text('stripe_subscription_id'),
     stripeCustomerId: text('stripe_customer_id'),
-    subscriptionTier: SubscriptionTierEnum('subscription_tier').notNull(),
+    subscriptionTier: SubscriptionTierEnum('subscription_type').notNull(),
     createdAt,
     updatedAt,
   },

@@ -1,8 +1,4 @@
-import {
-  userAccountService,
-  verificationTokenService,
-  EmailService,
-} from '#lib'
+import { verificationTokenService, EmailService, userService } from '#lib'
 import { BUSINESS_NAME, VERIFCATION_ERROR_STATES } from '#enums'
 import { createOneTimePasscode } from '../tokens/createOneTimePasscode'
 const MAX_FAILED_ATTEMPTS = 3
@@ -18,11 +14,10 @@ export const verifyOTP = async (
 }> => {
   const databaseRequestPromise = await Promise.all([
     verificationTokenService.getUserByEmail(email),
-    userAccountService.getUserByEmail(email),
+    userService.getUserByEmail(email),
   ])
   const tokenDataList = databaseRequestPromise[0]
   const users = databaseRequestPromise[1]
-
   const defaultState = {
     isSuccessful: false,
     error: undefined,
@@ -81,7 +76,7 @@ export const verifyOTP = async (
   }
 
   if (failedAttemptSessions > MAX_FAILED_SESSIONS) {
-    await userAccountService.setIsLocked(email, true)
+    await userService.setIsLocked(email, true)
   }
   const fifteenMinutesLocked = new Date(now.getTime() + 15 * 60 * 1000)
 
