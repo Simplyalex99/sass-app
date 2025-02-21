@@ -10,8 +10,11 @@ export const userService = {
       .where(eq(UserTable.email, email))
     return result
   },
-  createUser: async (email: string): Promise<void> => {
-    await db.insert(UserTable).values({ email })
+  createUser: async (
+    email: string
+  ): Promise<(typeof UserTable.$inferSelect)[]> => {
+    const result = await db.insert(UserTable).values({ email }).returning()
+    return result
   },
   deleteUserByEmail: async (email: string) => {
     const deletedUserID = await db
@@ -29,6 +32,12 @@ export const userService = {
         emailIsVerified: true,
         emailVerified: currentDate,
       })
+      .where(eq(UserTable.email, email))
+  },
+  setIsLocked: async (email: string, isLocked: boolean) => {
+    await db
+      .update(UserTable)
+      .set({ isLocked })
       .where(eq(UserTable.email, email))
   },
 }

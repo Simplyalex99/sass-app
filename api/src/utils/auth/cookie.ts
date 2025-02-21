@@ -7,6 +7,7 @@ import {
   ACCESS_TOKEN_EXPIRY_DATE_IN_SECONDS,
   ACCESS_TOKEN_KEY,
 } from '#enums'
+import 'dotenv/config'
 /**
  * Abstract Class CookieUtil
  *
@@ -39,27 +40,27 @@ export class JWTCookieUtil extends CookieUtil {
   saveCookie(res: Response, data: string[]): void {
     const secureCookieOptions = {
       secure: true,
-      sameSite: 'strict' as const,
+      sameSite: 'none' as const,
     }
     if (data.length < 2) {
       return
     }
     const accessToken = data[0]
     const refreshToken = data[1]
-
-    res.cookie(REFRESH_TOKEN_KEY, refreshToken, {
+    const isHttpOnly = process.env.NODE_ENV === 'dev' ? false : true
+    res.cookie(REFRESH_TOKEN_KEY + '_', refreshToken, {
       expires: createCookieExpiryDateInMilliseconds(
         REFRESH_TOKEN_EXPIRY_DATE_IN_SECONDS
       ),
-      httpOnly: true,
+      httpOnly: isHttpOnly,
       path: '/refresh',
       ...secureCookieOptions,
     })
-    res.cookie(ACCESS_TOKEN_KEY, accessToken, {
+    res.cookie(ACCESS_TOKEN_KEY + '_', accessToken, {
       expires: createCookieExpiryDateInMilliseconds(
         ACCESS_TOKEN_EXPIRY_DATE_IN_SECONDS
       ),
-      httpOnly: true,
+      httpOnly: isHttpOnly,
       ...secureCookieOptions,
     })
   }

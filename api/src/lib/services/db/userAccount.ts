@@ -11,21 +11,19 @@ export const userAccountService = {
     return result
   },
   createUser: async (
+    userId: string,
     email: string,
     plainTextPassword: string
   ): Promise<void> => {
     const { hashedPassword, salt } = generateHashedPassword(plainTextPassword)
-    await db
-      .insert(UserAccountTable)
-      .values({ email, passwordHash: hashedPassword, passwordSalt: salt })
+    await db.insert(UserAccountTable).values({
+      userId,
+      email,
+      passwordHash: hashedPassword,
+      passwordSalt: salt,
+    })
   },
 
-  setIsLocked: async (email: string, isLocked: boolean) => {
-    await db
-      .update(UserAccountTable)
-      .set({ isLocked })
-      .where(eq(UserAccountTable.email, email))
-  },
   addFailedAttempt: async (email: string, lastAttemptAt: Date) => {
     await db
       .update(UserAccountTable)
