@@ -70,7 +70,7 @@ export const Navbar = () => {
               </Button>
             ) : (
               <Button>
-                <Link href="/sign-in" className="text-lg">
+                <Link href="/login" className="text-lg">
                   Login
                 </Link>
               </Button>
