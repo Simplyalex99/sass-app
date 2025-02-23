@@ -1,3 +1,4 @@
+'use client'
 import {
   Card,
   CardFooter,
@@ -10,14 +11,15 @@ import {
   Input,
   Icons,
 } from '@/components'
-import { brandLogoName } from '@/constants'
+import { BUSINESS_NAME } from '@/constants'
 import Link from 'next/link'
+import { signIn } from 'next-auth/react'
 const SignInPage = () => {
   return (
     <Card className="p-6">
       <CardHeader className="space-y-1">
         <CardTitle className="text-center text-2xl">
-          Sign in to {brandLogoName}
+          Sign in to {BUSINESS_NAME}
         </CardTitle>
         <CardDescription>
           Welcome back! Please sign in to continue
@@ -25,17 +27,20 @@ const SignInPage = () => {
       </CardHeader>
       <CardContent className="grid gap-4">
         <div className="grid grid-cols-2 gap-6">
-          <form action={'/api/auth/callback/github'} method="POST">
-            <Button
-              variant="outline"
-              className="hover:bg-slate-100"
-              type="submit"
-            >
-              <Icons.gitHub /> GitHub
-            </Button>
-          </form>
+          <Button
+            variant="outline"
+            className="hover:bg-slate-100"
+            onClick={() => signIn('github')}
+          >
+            <Icons.gitHub />
+            GitHub
+          </Button>
 
-          <Button variant="outline" className="hover:bg-slate-100">
+          <Button
+            variant="outline"
+            className="hover:bg-slate-100"
+            onClick={() => signIn('google')}
+          >
             <Icons.google />
             Google
           </Button>
