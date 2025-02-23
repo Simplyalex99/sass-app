@@ -21,9 +21,6 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"],
-      "@/components": ["./src/components/index"],
-      "@/constants": ["./src/constants/index"],
-      "@/lib": ["./src/lib/index"],
       "auth": ["./auth"]
     }
   },

@@ -11,7 +11,7 @@ import {
   Input,
   Icons,
 } from '@/components'
-import { brandLogoName } from '@/constants'
+import { BUSINESS_NAME } from '@/constants'
 import Link from 'next/link'
 import { signIn } from 'next-auth/react'
 const SignInPage = () => {
@@ -19,7 +19,7 @@ const SignInPage = () => {
     <Card className="p-6">
       <CardHeader className="space-y-1">
         <CardTitle className="text-center text-2xl">
-          Sign in to {brandLogoName}
+          Sign in to {BUSINESS_NAME}
         </CardTitle>
         <CardDescription>
           Welcome back! Please sign in to continue
