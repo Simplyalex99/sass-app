@@ -19,26 +19,23 @@ export class CookieUtil {
     }
   }
   async saveCookie<T extends string | number>(
-    _res: Response,
     // @typescript-eslint/no-unused-vars
     _data: Array<T> | string[]
   ) {
     throw new Error("Method 'saveCookie()' must be implemented.")
   }
   // @typescript-eslint/no-unused-vars
-  async clearCookie(res: Response) {
+  async clearCookie() {
     throw new Error("Method 'clearCookie()' must be implemented.")
   }
   // @typescript-eslint/no-unused-vars
-  async readCookie(
-    req: Request
-  ): Promise<Array<string | undefined> | undefined> {
+  async readCookie(): Promise<Array<string | undefined> | undefined> {
     throw new Error("Method 'readCookie()' must be implemented.")
   }
 }
 
 export class JWTCookieUtil extends CookieUtil {
-  async saveCookie(res: Response, data: string[]) {
+  async saveCookie(data: string[]) {
     const secureCookieOptions = {
       secure: true,
       sameSite: 'strict' as const,
@@ -67,12 +64,12 @@ export class JWTCookieUtil extends CookieUtil {
     })
   }
 
-  async clearCookie(res: Response) {
+  async clearCookie() {
     const cookieStore = await cookies()
     cookieStore.delete(REFRESH_TOKEN_KEY)
     cookieStore.delete(ACCESS_TOKEN_KEY)
   }
-  async readCookie(req: Request) {
+  async readCookie() {
     const cookieStore = await cookies()
 
     if (!cookieStore) {
