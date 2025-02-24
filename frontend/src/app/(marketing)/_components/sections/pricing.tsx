@@ -1,5 +1,9 @@
 import React from 'react'
-import { subscriptionTiersInOrder, tierType, brandLogoName } from '@/constants'
+import {
+  subscriptionTiersInOrder,
+  subscriptionTiers,
+  BUSINESS_NAME,
+} from '@/constants'
 import {
   Button,
   Card,
@@ -10,7 +14,8 @@ import {
   CardFooter,
 } from '@/components'
 import { CheckIcon } from 'lucide-react'
-import { formatCompactNumbers, cn } from '@/lib'
+import { formatCompactNumbers, cn } from '@/utils'
+
 export const Pricing = () => {
   return (
     <section id="pricing" className="bg-accent/5 px-8 py-16">
@@ -40,8 +45,8 @@ export const PricingCard = ({
   canCustomizeBanner,
   canRemoveBranding,
 }: (typeof subscriptionTiersInOrder)[number]) => {
-  const isMostPopular = tierType.standard === name
-  const isPremium = tierType.premium === name
+  const isMostPopular = subscriptionTiers.Standard.name === name
+  const isPremium = subscriptionTiers.Premium.name === name
 
   return (
     <Card>
@@ -72,11 +77,11 @@ export const PricingCard = ({
             ? `${maxNumberOfProducts} product`
             : `${maxNumberOfProducts} products`}{' '}
         </Feature>
-        <Feature>{brandLogoName} Discounts</Feature>
+        <Feature>{BUSINESS_NAME} Discounts</Feature>
         {canCustomizeBanner && <Feature>Banner customization</Feature>}
         {canAccessAnalytics && <Feature>Can access analytics</Feature>}
         {canRemoveBranding && (
-          <Feature>Remove {brandLogoName} branding</Feature>
+          <Feature>Remove {BUSINESS_NAME} branding</Feature>
         )}
       </CardFooter>
     </Card>

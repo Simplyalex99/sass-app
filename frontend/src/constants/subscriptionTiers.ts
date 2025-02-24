@@ -1,5 +1,3 @@
-import 'dotenv/config'
-
 export const subscriptionTiers = {
   Free: {
     name: 'Free',
