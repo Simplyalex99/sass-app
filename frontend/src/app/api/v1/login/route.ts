@@ -21,6 +21,7 @@ import {
 } from '@/constants'
 import { LoginBody } from '@/types/api'
 import { LoginSchema } from '@/lib'
+import { cookies } from 'next/headers'
 export const POST = async (req: Request): Promise<NextResponse<LoginBody>> => {
   try {
     const result = LoginSchema.safeParse(req.body)
@@ -98,12 +99,13 @@ export const POST = async (req: Request): Promise<NextResponse<LoginBody>> => {
     const accessToken = JWTUtil.createAccessToken({ userId })
     const refreshToken = JWTUtil.createRefreshToken({ userId })
     const jwtUtilCookie = new JWTCookieUtil()
-    jwtUtilCookie.saveCookie([accessToken, refreshToken])
+    const cookieStore = await cookies()
+    jwtUtilCookie.saveCookie([accessToken, refreshToken], cookieStore)
     return NextResponse.json(
       {
         user: {
           isEmailVerified: true,
-          data: { userId, withOauthLogin: false },
+          data: { userId },
         },
       },
       { status: 200 }

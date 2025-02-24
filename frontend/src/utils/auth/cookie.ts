@@ -6,6 +6,7 @@ import {
   ACCESS_TOKEN_EXPIRY_DATE_IN_SECONDS,
   ACCESS_TOKEN_KEY,
 } from '@/constants'
+import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies'
 import { cookies } from 'next/headers'
 /**
  * Abstract Class CookieUtil
@@ -18,24 +19,28 @@ export class CookieUtil {
       throw new Error("Abstract classes can't be instantiated.")
     }
   }
-  async saveCookie<T extends string | number>(
+
+  saveCookie<T extends string | number>(
     // @typescript-eslint/no-unused-vars
-    _data: Array<T> | string[]
+    _data: Array<T> | string[],
+    _cookieStore: ReadonlyRequestCookies
   ) {
     throw new Error("Method 'saveCookie()' must be implemented.")
   }
   // @typescript-eslint/no-unused-vars
-  async clearCookie() {
+  clearCookie(_cookieStore: ReadonlyRequestCookies) {
     throw new Error("Method 'clearCookie()' must be implemented.")
   }
   // @typescript-eslint/no-unused-vars
-  async readCookie(): Promise<Array<string | undefined> | undefined> {
+  readCookie(
+    _cookieStore: ReadonlyRequestCookies
+  ): Array<string | undefined> | undefined {
     throw new Error("Method 'readCookie()' must be implemented.")
   }
 }
 
 export class JWTCookieUtil extends CookieUtil {
-  async saveCookie(data: string[]) {
+  saveCookie(data: string[], cookieStore: ReadonlyRequestCookies) {
     const secureCookieOptions = {
       secure: true,
       sameSite: 'strict' as const,
@@ -46,7 +51,6 @@ export class JWTCookieUtil extends CookieUtil {
     const accessToken = data[0]
     const refreshToken = data[1]
     const isHttpOnly = process.env.NODE_ENV === 'development' ? false : true
-    const cookieStore = await cookies()
     cookieStore.set(REFRESH_TOKEN_KEY + '_', refreshToken, {
       expires: createCookieExpiryDateInMilliseconds(
         REFRESH_TOKEN_EXPIRY_DATE_IN_SECONDS
@@ -64,14 +68,11 @@ export class JWTCookieUtil extends CookieUtil {
     })
   }
 
-  async clearCookie() {
-    const cookieStore = await cookies()
+  clearCookie(cookieStore: ReadonlyRequestCookies) {
     cookieStore.delete(REFRESH_TOKEN_KEY)
     cookieStore.delete(ACCESS_TOKEN_KEY)
   }
-  async readCookie() {
-    const cookieStore = await cookies()
-
+  readCookie(cookieStore: ReadonlyRequestCookies) {
     if (!cookieStore) {
       return undefined
     }
