@@ -12,6 +12,6 @@ export type LoginBody = {
   error?: string
   user?: {
     isEmailVerified: boolean
-    data?: { userId: string; withOauthLogin: boolean }
+    data?: { userId: string }
   }
 }
