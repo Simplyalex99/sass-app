@@ -16,7 +16,7 @@ import {
   ACCOUNT_LOCKED,
   EMAIL_UNVERFIED,
   MAX_LOGIN_ATTEMPT,
-  TOO_MANY_REQUEST,
+  TOO_MANY_REQUEST_WITH_TIME,
   INTERNAL_SERVER_ERROR,
 } from '@/constants'
 import { LoginBody } from '@/types/api'
@@ -75,7 +75,7 @@ export const POST = async (req: Request): Promise<NextResponse<LoginBody>> => {
       if (timeElapsedInSeconds < timeoutInSeconds) {
         const remainningLockoutTime = timeoutInSeconds - timeElapsedInSeconds
         const formattedTimeout = formatTime(remainningLockoutTime)
-        const lockedUntil = TOO_MANY_REQUEST(formattedTimeout)
+        const lockedUntil = TOO_MANY_REQUEST_WITH_TIME(formattedTimeout)
         return NextResponse.json(
           {
             error: `Too many failed attempts. Try again in ${lockedUntil}.`,
