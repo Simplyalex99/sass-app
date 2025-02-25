@@ -229,7 +229,7 @@ export const countryGroupDiscountRelations = relations(
 )
 
 export const SubscriptionTierEnum = pgEnum(
-  'subscriptionType',
+  'subscription',
   Object.keys(subscriptionTiers) as [TierNames]
 )
 
@@ -252,7 +252,7 @@ export const UserSubscriptionTable = pgTable(
     stripeSubscriptionItemId: text('stripe_subscription_item_id'),
     stripeSubscriptionId: text('stripe_subscription_id'),
     stripeCustomerId: text('stripe_customer_id'),
-    subscriptionTier: SubscriptionTierEnum('subscription_type').notNull(),
+    subscriptionTier: SubscriptionTierEnum('subscription').notNull(),
     createdAt,
     updatedAt,
   },

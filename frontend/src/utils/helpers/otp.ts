@@ -3,7 +3,7 @@ import { userService } from '../services/db/user'
 import { verificationTokenService } from '../services/db/verificationToken'
 import { VERIFCATION_ERROR_STATES } from '@/constants/errorStatusCodeMessages'
 import { BUSINESS_NAME } from '@/constants/socials'
-import { createOneTimePasscode } from '../tokens/createOneTimePasscode'
+import { createSixDigitOTP, createOTP } from '../tokens/createOneTimePasscode'
 const MAX_FAILED_ATTEMPTS = 3
 const MAX_FAILED_SESSIONS = 2
 
@@ -107,7 +107,31 @@ export const sendVerificationEmail = async (
 }
 
 export const createEmailVerificationRequest = async (email: string) => {
-  const oneTimePassCode = createOneTimePasscode().toString()
+  const oneTimePassCode = createSixDigitOTP().toString()
+  await verificationTokenService.deleteOneTimePasscode(email)
+  const now = new Date()
+  const expiresAtTenMinutes = new Date(now.getTime() + 10 * 60 * 1000)
+  await verificationTokenService.createOneTimePasscode(
+    email,
+    oneTimePassCode,
+    expiresAtTenMinutes
+  )
+  return { otp: oneTimePassCode, otpExpiresAt: expiresAtTenMinutes }
+}
+
+/**
+ *
+ * @param email
+ *
+ * @param bytes representing the length of the OTP
+ * @note Max bytes is 256^6
+ * @returns
+ */
+export const createPasswordResetRequest = async (
+  email: string,
+  bytes: number
+) => {
+  const oneTimePassCode = createOTP(bytes)
   await verificationTokenService.deleteOneTimePasscode(email)
   const now = new Date()
   const expiresAtTenMinutes = new Date(now.getTime() + 10 * 60 * 1000)
