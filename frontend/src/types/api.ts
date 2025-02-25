@@ -15,3 +15,6 @@ export type LoginBody = {
     data?: { userId: string }
   }
 }
+export type PasswordUpdateBody = {
+  error?: string
+}

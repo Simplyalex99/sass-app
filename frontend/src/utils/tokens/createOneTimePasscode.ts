@@ -9,5 +9,5 @@ export const createSixDigitOTP = () => {
  * @returns string
  */
 export const createOTP = (bytes: number) => {
-  return crypto.randomBytes(bytes).toString()
+  return crypto.randomBytes(bytes).toString('hex')
 }
