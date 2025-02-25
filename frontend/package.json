@@ -8,7 +8,11 @@
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky",
-    "format:fix": "prettier --write --ignore-path .prettierignore ."
+    "format:fix": "prettier --write --ignore-path .prettierignore .",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
