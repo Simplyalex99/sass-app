@@ -30,8 +30,10 @@ export const POST = async () => {
     const hashedAccessToken = createHashedToken(accessToken)
     const hashedRefreshToken = createHashedToken(refreshToken)
 
-    InvalidateJwtUtil.blacklistRefreshToken(hashedRefreshToken)
-    InvalidateJwtUtil.blacklistAccessToken(hashedAccessToken)
+    Promise.all([
+      InvalidateJwtUtil.blacklistRefreshToken(hashedRefreshToken),
+      InvalidateJwtUtil.blacklistAccessToken(hashedAccessToken),
+    ])
   } catch (err) {
     log.error(err)
     return NextResponse.json({ error: INTERNAL_SERVER_ERROR }, { status: 500 })
