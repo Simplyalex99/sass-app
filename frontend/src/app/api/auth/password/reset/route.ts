@@ -33,10 +33,10 @@ export const POST = async (
     const { email } = result.data
 
     const verificationTokenData = await createPasswordResetRequest(email, 48)
-    const { otp, otpExpiresAt } = verificationTokenData
+    const { otp, remainningMinutes } = verificationTokenData
     const passwordResetHtml = createPasswordResetHtml(
       otp,
-      otpExpiresAt.getMinutes().toString()
+      remainningMinutes.toString()
     )
     sendVerificationEmail(BUSINESS_EMAIL, [email], passwordResetHtml)
   } catch (err) {

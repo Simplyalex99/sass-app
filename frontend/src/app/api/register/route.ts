@@ -19,7 +19,9 @@ export const POST = async (
   request: Request
 ): Promise<NextResponse<RegisterUserBody>> => {
   try {
-    const result = RegisterUserSchema.safeParse(request.body)
+    const body = await request.json()
+
+    const result = RegisterUserSchema.safeParse(body)
     if (!result.success) {
       const invalidFieldsMessage = formatSchemaErrorMessages(
         result.error.issues

@@ -22,9 +22,12 @@ import {
 import { LoginBody } from '@/types/api'
 import { LoginSchema } from '@/lib'
 import { cookies } from 'next/headers'
-export const POST = async (req: Request): Promise<NextResponse<LoginBody>> => {
+export const POST = async (
+  request: Request
+): Promise<NextResponse<LoginBody>> => {
   try {
-    const result = LoginSchema.safeParse(req.body)
+    const body = await request.json()
+    const result = LoginSchema.safeParse(body)
     if (!result.success) {
       const invalidFieldsMessage = formatSchemaErrorMessages(
         result.error.issues

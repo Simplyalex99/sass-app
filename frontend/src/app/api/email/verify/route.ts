@@ -13,7 +13,8 @@ export const POST = async (
   request: Request
 ): Promise<NextResponse<VerifyEmailBody>> => {
   try {
-    const result = MagicLinkSchema.safeParse(request.body)
+    const body = await request.json()
+    const result = MagicLinkSchema.safeParse(body)
     if (!result.success) {
       const invalidFieldsMessage = formatSchemaErrorMessages(
         result.error.issues

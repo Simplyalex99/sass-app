@@ -13,13 +13,14 @@ import { SendEmailBody } from '@/types/api'
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorStatusCodeMessages'
 
 export const POST = async (
-  req: Request
+  request: Request
 ): Promise<NextResponse<SendEmailBody>> => {
   try {
     if (!BUSINESS_EMAIL) {
       throw new Error('Business email is not defined')
     }
-    const result = SendEmailSchema.safeParse(req.body)
+    const body = await request.json()
+    const result = SendEmailSchema.safeParse(body)
     if (!result.success) {
       const invalidFieldsMessage = formatSchemaErrorMessages(
         result.error.issues
@@ -33,10 +34,11 @@ export const POST = async (
     const { email } = result.data
 
     const verificationTokenData = await createEmailVerificationRequest(email)
-    const { otp, otpExpiresAt } = verificationTokenData
+    const { otp, remainningMinutes } = verificationTokenData
+
     const emailVerificationHtml = createEmailVerificationHtml(
       otp,
-      otpExpiresAt.getMinutes().toString()
+      remainningMinutes.toString()
     )
     sendVerificationEmail(BUSINESS_EMAIL, [email], emailVerificationHtml)
   } catch (err) {
