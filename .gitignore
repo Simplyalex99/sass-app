@@ -5,6 +5,7 @@
 /backend/node_modules
 /api/node_modules
 /frontend/node_modules
+/frontend/src/lib/drizzle/migrations
 /.pnp
 .pnp.*
 .yarn/*
