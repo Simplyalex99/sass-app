@@ -33,4 +33,14 @@ export const userAccountService = {
       })
       .where(eq(UserAccountTable.email, email))
   },
+  updatePassword: async (email: string, plainTextPassword: string) => {
+    const { hashedPassword, salt } = generateHashedPassword(plainTextPassword)
+    await db
+      .update(UserAccountTable)
+      .set({
+        passwordHash: hashedPassword,
+        passwordSalt: salt,
+      })
+      .where(eq(UserAccountTable.email, email))
+  },
 }

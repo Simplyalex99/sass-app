@@ -69,7 +69,7 @@ export const verifyOTP = async (
 
   if (otp === oneTimePasscode) {
     verificationTokenService.deleteOneTimePasscode(email)
-    return { isSuccessful: true, httpStatusCode: 200 }
+    return { isSuccessful: true, httpStatusCode: 201 }
   }
 
   if (failedAttempts < MAX_FAILED_ATTEMPTS) {
@@ -92,10 +92,11 @@ export const verifyOTP = async (
 export const sendVerificationEmail = async (
   sender: string,
   receiptients: string[],
-  emailVerificationHtml: string
+  emailVerificationHtml: string,
+  subject: string = 'Verifcation Code'
 ) => {
   const emailService = new EmailService()
-  const emailSubject = `${BUSINESS_NAME}: Verifcation Code`
+  const emailSubject = `${BUSINESS_NAME}: ${subject}`
   const result = emailService.sendEmail(
     sender,
     receiptients,
