@@ -50,7 +50,6 @@ export const verifyOTP = async (
   } = tokenData
   const now = new Date()
   const currentDate = new Date(now.getTime())
-
   if (lockUntil !== null && lockUntil > currentDate) {
     const remainningMinutesLocked = lockUntil.getMinutes()
     return {
@@ -110,13 +109,15 @@ export const createEmailVerificationRequest = async (email: string) => {
   const oneTimePassCode = createSixDigitOTP().toString()
   await verificationTokenService.deleteOneTimePasscode(email)
   const now = new Date()
-  const expiresAtTenMinutes = new Date(now.getTime() + 10 * 60 * 1000)
+  const expiresAtTenMinutes = new Date(Date.now() + 10 * 60 * 1000)
+  const remainningMinutes = expiresAtTenMinutes.getMinutes() - now.getMinutes()
+
   await verificationTokenService.createOneTimePasscode(
     email,
     oneTimePassCode,
     expiresAtTenMinutes
   )
-  return { otp: oneTimePassCode, otpExpiresAt: expiresAtTenMinutes }
+  return { otp: oneTimePassCode, remainningMinutes }
 }
 
 /**
@@ -135,10 +136,12 @@ export const createPasswordResetRequest = async (
   await verificationTokenService.deleteOneTimePasscode(email)
   const now = new Date()
   const expiresAtTenMinutes = new Date(now.getTime() + 10 * 60 * 1000)
+  const remainningMinutes = expiresAtTenMinutes.getMinutes() - now.getMinutes()
   await verificationTokenService.createOneTimePasscode(
     email,
     oneTimePassCode,
     expiresAtTenMinutes
   )
-  return { otp: oneTimePassCode, otpExpiresAt: expiresAtTenMinutes }
+
+  return { otp: oneTimePassCode, remainningMinutes }
 }
