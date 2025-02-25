@@ -6,6 +6,7 @@ export {
   verifyOTP,
   createEmailVerificationRequest,
   sendVerificationEmail,
+  createPasswordResetRequest,
 } from './helpers/otp'
 export { isPasswordValid } from './helpers/isPasswordValid'
 export { formatSchemaErrorMessages } from './helpers/formatSchemaErrorMessagesUtil'
@@ -15,13 +16,14 @@ export { JWTCookieUtil, CookieUtil } from './auth/cookie'
 export { createCookieExpiryDateInMilliseconds } from './auth/createCookieExpiryDateInMilliseconds'
 export { formatCompactNumbers } from './helpers/formatCompactNumbers'
 export { isEmailValid } from './helpers/isEmailValid'
-export { createOneTimePasscode } from './tokens/createOneTimePasscode'
+export { createSixDigitOTP, createOTP } from './tokens/createOneTimePasscode'
 export { generateRandomPassword } from './helpers/generateRandomPassword'
 export { mockSecureLoginAttempt } from './helpers/mockSecureLoginAttempt'
 export { getLoginTimeout } from './helpers/getLoginTimeout'
 export { formatTime } from './helpers/formatTime'
 export { fetchData } from './others/fetchData'
 export { createEmailVerificationHtml } from './others/createEmailVerificationHtml'
+export { createPasswordResetHtml } from './others/createPasswordResetHtml'
 export { cn } from './others/cn'
 export { userService } from './services/db/user'
 export { subscriptionService } from './services/db/subscription'
