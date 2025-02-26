@@ -7,7 +7,7 @@ import {
   ACCESS_TOKEN_KEY,
 } from '@/constants'
 import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies'
-import { cookies } from 'next/headers'
+
 /**
  * Abstract Class CookieUtil
  *

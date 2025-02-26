@@ -8,8 +8,8 @@ export {
   sendVerificationEmail,
   createPasswordResetRequest,
 } from './helpers/otp'
-export { isPasswordValid } from './helpers/isPasswordValid'
-export { formatSchemaErrorMessages } from './helpers/formatSchemaErrorMessagesUtil'
+export { isPasswordValid } from './helpers/validatePasswordUtil'
+export { formatSchemaErrorMessages } from './helpers/formatSchemaErrorsUtil'
 export { createCsrfToken, createHashedToken } from './tokens/token'
 export { log } from './others/log'
 export { JWTCookieUtil, CookieUtil } from './auth/cookie'
