@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { isPasswordValid } from '@/utils/helpers/isPasswordValid'
+import { isPasswordValid } from '@/utils/helpers/validatePasswordUtil'
 export const ResetPasswordSchema = z.object({
   otp: z.string({ message: 'Missing required field token' }),
   email: z.string({ message: 'Missing required field email' }),
