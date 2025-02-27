@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react'
 import {
   Card,
   CardFooter,
@@ -14,7 +15,25 @@ import {
 import { BUSINESS_NAME } from '@/constants'
 import Link from 'next/link'
 import { signIn } from 'next-auth/react'
+
 const SignInPage = () => {
+  const [loginCredentials, setLoginCredentials] = useState({
+    email: '',
+    plainTextPassword: '',
+  })
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+
+  const onChangeLoginHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedInputs = {
+      ...loginCredentials,
+      [e.target.name]: e.target.value,
+    }
+    setLoginCredentials(updatedInputs)
+  }
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible)
+  }
+  const { email, plainTextPassword } = loginCredentials
   return (
     <Card className="p-6">
       <CardHeader className="space-y-1">
@@ -57,11 +76,34 @@ const SignInPage = () => {
         </div>
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" />
+          <Input
+            id="email"
+            type="email"
+            placeholder="m@example.com"
+            value={email}
+            onChange={onChangeLoginHandler}
+          />
+        </div>
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
+          type={isPasswordVisible ? 'text' : 'password'}
+          name="plainTextPassword"
+          value={plainTextPassword}
+          onChange={onChangeLoginHandler}
+        />
+        <div className="flex items-center gap-2">
+          <Input
+            id="password-checkbox"
+            type="checkbox"
+            className="h-4 w-6 border-none shadow-none"
+            onClick={togglePasswordVisibility}
+          />
+          <p className="text-sm">Show Password</p>
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full">Create account</Button>
+        <Button className="w-full">Sign-in</Button>
       </CardFooter>
       <CardFooter>
         <div className="relative grid w-full items-center">
