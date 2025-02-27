@@ -15,6 +15,7 @@ import {
 import { BUSINESS_NAME } from '@/constants'
 import Link from 'next/link'
 import { signIn } from 'next-auth/react'
+
 const SignInPage = () => {
   const [loginCredentials, setLoginCredentials] = useState({
     email: '',
@@ -102,7 +103,7 @@ const SignInPage = () => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full">Create account</Button>
+        <Button className="w-full">Sign-in</Button>
       </CardFooter>
       <CardFooter>
         <div className="relative grid w-full items-center">
