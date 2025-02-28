@@ -6,6 +6,7 @@ import {
   createEmailVerificationRequest,
   sendVerificationEmail,
   log,
+  userAccountService,
 } from '@/utils'
 import { SendEmailSchema } from '@/lib/zod/schemas/sendEmail'
 
@@ -31,8 +32,12 @@ export const POST = async (
       )
     }
 
-    const { email } = result.data
-
+    const { userId } = result.data
+    const account = await userAccountService.getUserById(userId)
+    if (account.length === 0) {
+      return NextResponse.json({ message: null }, { status: 400 })
+    }
+    const email = account[0].email
     const verificationTokenData = await createEmailVerificationRequest(email)
     const { otp, remainningMinutes } = verificationTokenData
 

@@ -5,6 +5,7 @@ import {
   verifyOTP,
   userService,
   log,
+  userAccountService,
 } from '@/utils/index'
 import { VerifyEmailBody } from '@/types/api'
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorStatusCodeMessages'
@@ -22,7 +23,12 @@ export const POST = async (
       return NextResponse.json({ error: invalidFieldsMessage }, { status: 400 })
     }
 
-    const { email, oneTimePasscode } = result.data
+    const { userId, oneTimePasscode } = result.data
+    const account = await userAccountService.getUserById(userId)
+    if (account.length === 0) {
+      return NextResponse.json({}, { status: 400 })
+    }
+    const email = account[0].email
     const { httpStatusCode, error, isSuccessful } = await verifyOTP(
       email,
       oneTimePasscode
