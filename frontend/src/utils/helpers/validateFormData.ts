@@ -8,7 +8,7 @@ const validateEmail = (email: string) => {
   }
   return null
 }
-const validateConfirmPassword = (
+export const validateConfirmPassword = (
   plainTextPassword: string,
   confirmPassword: string
 ) => {

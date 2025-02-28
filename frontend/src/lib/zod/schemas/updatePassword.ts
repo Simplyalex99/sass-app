@@ -1,8 +1,7 @@
 import { z } from 'zod'
 import { isPasswordValid } from '@/utils/helpers/validatePasswordUtil'
-export const ResetPasswordSchema = z.object({
+export const PasswordUpdateSchema = z.object({
   otp: z.string({ message: 'Missing required field token' }),
-  email: z.string({ message: 'Missing required field email' }),
   passwordForm: z
     .object(
       {
@@ -30,4 +29,4 @@ export const ResetPasswordSchema = z.object({
       }
     ),
 })
-export type ResetPasswordSchemaType = z.infer<typeof ResetPasswordSchema>
+export type ResetPasswordSchemaType = z.infer<typeof PasswordUpdateSchema>
