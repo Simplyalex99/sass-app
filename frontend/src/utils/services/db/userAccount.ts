@@ -10,6 +10,13 @@ export const userAccountService = {
       .where(eq(UserAccountTable.email, email))
     return result
   },
+  getUserById: async (userId: string) => {
+    const result = await db
+      .select()
+      .from(UserAccountTable)
+      .where(eq(UserAccountTable.userId, userId))
+    return result
+  },
   createUser: async (
     userId: string,
     email: string,

@@ -58,9 +58,9 @@ export const POST = async (
       subscriptionTier: subscriptionTiers.Free.name,
     })
     await Promise.all([userAccountPromise, subscriptionPromise])
+    return NextResponse.json({ userId }, { status: 201 })
   } catch (err) {
     log.error(err)
     return NextResponse.json({}, { status: 500 })
   }
-  return NextResponse.json({}, { status: 201 })
 }

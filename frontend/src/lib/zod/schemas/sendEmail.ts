@@ -1,5 +1,5 @@
 import { z } from 'zod'
 export const SendEmailSchema = z.object({
-  email: z.string({ message: 'Missing required field email' }),
+  userId: z.string({ message: 'Missing required field userId' }),
 })
 export type SendEmailSchemaType = z.infer<typeof SendEmailSchema>

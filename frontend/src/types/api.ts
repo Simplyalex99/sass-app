@@ -1,5 +1,6 @@
 export type RegisterUserBody = {
   error?: string
+  userId?: string
 }
 export type SendEmailBody = {
   error?: string

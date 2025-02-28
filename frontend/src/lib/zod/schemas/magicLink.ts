@@ -1,7 +1,7 @@
 import { z } from 'zod'
 export const MagicLinkSchema = z.object(
   {
-    email: z.string({ message: 'Missing required field email' }),
+    userId: z.string({ message: 'Missing required field userId' }),
     oneTimePasscode: z
       .string({
         message: 'Missing requied field oneTimePasscode',
