@@ -10,7 +10,13 @@ export const verificationTokenService = {
       .where(eq(VerificationTokenTable.email, email))
     return result
   },
-
+  getUserEmailByToken: async (token: string) => {
+    const result = await db
+      .select()
+      .from(VerificationTokenTable)
+      .where(eq(VerificationTokenTable.otp, token))
+    return result
+  },
   createOneTimePasscode: async (
     email: string,
     otp: string,

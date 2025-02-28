@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server'
-import { ResetPasswordSchema } from '@/lib/zod/schemas/resetPassword'
+import { PasswordUpdateSchema } from '@/lib/zod/schemas/updatePassword'
 import {
   formatSchemaErrorMessages,
   verifyOTP,
   log,
   userAccountService,
+  verificationTokenService,
 } from '@/utils/index'
 import { PasswordUpdateBody } from '@/types/api'
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorStatusCodeMessages'
@@ -14,7 +15,7 @@ export const POST = async (
 ): Promise<NextResponse<PasswordUpdateBody>> => {
   try {
     const body = await request.json()
-    const result = ResetPasswordSchema.safeParse(body)
+    const result = PasswordUpdateSchema.safeParse(body)
     if (!result.success) {
       const invalidFieldsMessage = formatSchemaErrorMessages(
         result.error.issues
@@ -22,7 +23,13 @@ export const POST = async (
       return NextResponse.json({ error: invalidFieldsMessage }, { status: 400 })
     }
 
-    const { email, otp, passwordForm } = result.data
+    const { otp, passwordForm } = result.data
+    const verificationData =
+      await verificationTokenService.getUserEmailByToken(otp)
+    if (verificationData.length === 0) {
+      return NextResponse.json({ error: 'Invalid token' }, { status: 400 })
+    }
+    const email = verificationData[0].email
     const { httpStatusCode, error, isSuccessful } = await verifyOTP(email, otp)
     if (!isSuccessful) {
       return NextResponse.json({ error }, { status: httpStatusCode })
