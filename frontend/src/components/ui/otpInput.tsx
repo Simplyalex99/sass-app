@@ -11,7 +11,7 @@ export const OTPInput = ({
 }) => {
   const [otp, setOtp] = useState(new Array(length).fill(''))
   const inputRefs = useRef<Array<HTMLInputElement | null>>([])
-
+  const [activeIndex, setActiveIndex] = useState(0)
   const handleChange = (index: number, value: string) => {
     if (!/^[0-9]?$/.test(value)) return
     const newOtp = [...otp]
@@ -19,7 +19,9 @@ export const OTPInput = ({
     setOtp(newOtp)
 
     if (value && index < length - 1) {
-      inputRefs.current[index + 1]?.focus()
+      setActiveIndex((index) => {
+        return index + 1
+      })
     }
 
     if (newOtp.every((digit) => digit !== '')) {
@@ -32,7 +34,9 @@ export const OTPInput = ({
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus()
+      setActiveIndex((index) => {
+        return index - 1
+      })
     }
   }
 
@@ -55,6 +59,7 @@ export const OTPInput = ({
           ref={(el) => {
             inputRefs.current[index] = el
           }}
+          autoFocus={index === activeIndex}
         ></Input>
       ))}
     </div>

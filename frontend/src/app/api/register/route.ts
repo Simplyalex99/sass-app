@@ -3,6 +3,7 @@ import {
   EMAIL_ALREADY_EXISTS,
   subscriptionTiers,
   INTERNAL_SERVER_ERROR,
+  BUSINESS_EMAIL,
 } from '@/constants'
 import {
   userService,
@@ -10,6 +11,9 @@ import {
   userAccountService,
   formatSchemaErrorMessages,
   log,
+  createEmailVerificationRequest,
+  createEmailVerificationHtml,
+  sendVerificationEmail,
 } from '@/utils'
 import { RegisterUserSchema } from '@/lib/zod/schemas/registerUser'
 
@@ -57,6 +61,14 @@ export const POST = async (
       email,
       subscriptionTier: subscriptionTiers.Free.name,
     })
+    const verificationTokenData = await createEmailVerificationRequest(email)
+    const { otp, remainningMinutes } = verificationTokenData
+
+    const emailVerificationHtml = createEmailVerificationHtml(
+      otp,
+      remainningMinutes.toString()
+    )
+    sendVerificationEmail(BUSINESS_EMAIL, [email], emailVerificationHtml)
     await Promise.all([userAccountPromise, subscriptionPromise])
     return NextResponse.json({ userId }, { status: 201 })
   } catch (err) {

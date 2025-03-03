@@ -10,6 +10,10 @@ export type VerifyEmailBody = {
   error?: string
   message?: string
 }
+export type RequestOTPBody = {
+  error?: string
+  message?: string
+}
 export type LoginBody = {
   error?: string
   user?: {
