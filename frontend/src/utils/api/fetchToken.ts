@@ -1,7 +1,7 @@
 import { fetchData } from '../others/fetchData'
-import { VerifyEmailBody } from '@/types/api'
+import { RequestOTPBody } from '@/types/api'
 export const fetchToken = async (id: string | null) => {
-  const result = await fetchData<VerifyEmailBody>('/api/email/request', {
+  const result = await fetchData<RequestOTPBody>('/api/email/request', {
     method: 'POST',
     body: JSON.stringify({ userId: id }),
   })

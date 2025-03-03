@@ -8,20 +8,20 @@ import {
   log,
   userAccountService,
 } from '@/utils'
-import { VerifyEmailSchema } from '@/lib/zod/schemas/verifyEmail'
+import { RequestOTPSchema } from '@/lib/zod/schemas/requestOtp'
 
-import { VerifyEmailBody } from '@/types/api'
+import { RequestOTPBody } from '@/types/api'
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorStatusCodeMessages'
 
 export const POST = async (
   request: Request
-): Promise<NextResponse<VerifyEmailBody>> => {
+): Promise<NextResponse<RequestOTPBody>> => {
   try {
     if (!BUSINESS_EMAIL) {
       throw new Error('Business email is not defined')
     }
     const body = await request.json()
-    const result = VerifyEmailSchema.safeParse(body)
+    const result = RequestOTPSchema.safeParse(body)
     if (!result.success) {
       const invalidFieldsMessage = formatSchemaErrorMessages(
         result.error.issues
