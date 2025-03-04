@@ -12,15 +12,16 @@ import {
   Input,
   Icons,
 } from '@/components'
-import { BUSINESS_NAME } from '@/constants'
+import { BUSINESS_NAME } from '@/constants/socials'
+import { forgotPasswordLink } from '@/constants/links'
 import Link from 'next/link'
 import { signIn } from 'next-auth/react'
-
 const SignInPage = () => {
   const [loginCredentials, setLoginCredentials] = useState({
     email: '',
     plainTextPassword: '',
   })
+
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
   const onChangeLoginHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,6 +102,12 @@ const SignInPage = () => {
           />
           <p className="text-sm">Show Password</p>
         </div>
+        <Link
+          href={forgotPasswordLink}
+          className="text-xs text-muted-foreground underline"
+        >
+          Forgot Password?
+        </Link>
       </CardContent>
       <CardFooter>
         <Button className="w-full">Sign-in</Button>

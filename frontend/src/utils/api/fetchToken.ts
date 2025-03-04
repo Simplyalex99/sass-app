@@ -7,3 +7,10 @@ export const fetchToken = async (id: string | null) => {
   })
   return result.body
 }
+export const requestPasswordReset = async (email: string) => {
+  const result = await fetchData<RequestOTPBody>('/api/auth/password/reset', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  })
+  return result.body
+}

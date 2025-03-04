@@ -1,3 +1,5 @@
 export const signUpLink = '/sign-up'
 export const verifyEmailLink = '/verify-email'
 export const signInLink = '/sign-in'
+export const forgotPasswordLink = '/password/reset'
+export const updatePasswordLink = '/password/update'

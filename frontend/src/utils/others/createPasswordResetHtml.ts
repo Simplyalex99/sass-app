@@ -1,4 +1,6 @@
 import { BUSINESS_NAME } from '@/constants/socials'
+import { updatePasswordLink } from '@/constants/links'
+
 const domain = process.env.NEXT_PUBLIC_URL
 if (!domain) {
   throw new Error('domain not defined')
@@ -8,7 +10,7 @@ export const createPasswordResetHtml = (
   otp: string,
   otpAtInMinutes: string
 ) => {
-  const passwordResetPath = `${domain}/password-reset/${otp}`
+  const passwordResetPath = `${domain}${updatePasswordLink}?otp=${otp}`
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="ltr" lang="en">
   <head>
