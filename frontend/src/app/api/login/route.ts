@@ -1,16 +1,6 @@
 import { NextResponse } from 'next/server'
-import {
-  formatSchemaErrorMessages,
-  isPasswordCorrect,
-  JWTUtil,
-  mockSecureLoginAttempt,
-  JWTCookieUtil,
-  getLoginTimeout,
-  formatTime,
-  userAccountService,
-  userService,
-  log,
-} from '@/utils'
+import { formatSchemaErrorMessages } from '@/utils/helpers/formatSchemaErrorsUtil'
+import { isPasswordCorrect } from '@/utils/helpers/password'
 import {
   INVALID_LOGIN,
   ACCOUNT_LOCKED,
@@ -22,6 +12,14 @@ import {
 import { LoginBody } from '@/types/api'
 import { LoginSchema } from '@/lib'
 import { cookies } from 'next/headers'
+import { userAccountService } from '@/utils/services/db/userAccount'
+import { userService } from '@/utils/services/db/user'
+import { mockSecureLoginAttempt } from '@/utils/helpers/mockSecureLoginAttempt'
+import { getLoginTimeout } from '@/utils/helpers/getLoginTimeout'
+import { formatTime } from '@/utils/helpers/formatTime'
+import { JWTUtil } from '@/utils/auth/jwt'
+import { JWTCookieUtil } from '@/utils/auth/cookie'
+import log from '@/utils/others/log'
 export const POST = async (
   request: Request
 ): Promise<NextResponse<LoginBody>> => {

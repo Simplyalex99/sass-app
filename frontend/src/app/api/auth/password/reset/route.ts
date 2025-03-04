@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server'
 import { BUSINESS_EMAIL } from '@/constants/socials'
+
+import { formatSchemaErrorMessages } from '@/utils/helpers/formatSchemaErrorsUtil'
+import { createPasswordResetHtml } from '@/utils/others/createPasswordResetHtml'
+import { log } from '@/utils/others/log'
 import {
-  formatSchemaErrorMessages,
-  createPasswordResetHtml,
   sendVerificationEmail,
-  log,
   createPasswordResetRequest,
-  userService,
-} from '@/utils'
+} from '@/utils/helpers/otp'
+import { userService } from '@/utils/services/db/user'
 import { SendEmailSchema } from '@/lib/zod/schemas/sendEmail'
 
 import { SendEmailBody } from '@/types/api'
