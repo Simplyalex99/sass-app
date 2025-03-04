@@ -11,12 +11,11 @@ import {
   Input,
 } from '@/components'
 import { RegisterUserBody } from '@/types/api'
-import {
-  validateEmail,
-  validateConfirmPassword,
-} from '@/utils/helpers/validateFormData'
+import { validateConfirmPassword } from '@/utils/helpers/validateFormData'
 import { validatePassword } from '@/utils/helpers/validatePasswordUtil'
 import { fetchData } from '@/utils/others/fetchData'
+import isEmail from 'validator/lib/isEmail'
+
 type FormError = {
   emailError: string | null
   passwordErrors: string[]
@@ -40,8 +39,8 @@ const SignUpPage = () => {
   const validateFormFields = (newFormData: typeof formData) => {
     const formDataError = { ...formError }
     const { plainTextPassword, confirmPassword, email } = newFormData
-    if (newFormData.email.length !== 0) {
-      formDataError.emailError = validateEmail(email)
+    if (newFormData.email.length !== 0 && isEmail(email)) {
+      formDataError.emailError = 'Invalid email'
     } else {
       formDataError.emailError = null
     }
@@ -96,7 +95,6 @@ const SignUpPage = () => {
   }
 
   const onChangeFormHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.name)
     const newFormData = { ...formData, [e.target.name]: e.target.value }
     setFormData(newFormData)
     validateFormFields(newFormData)
