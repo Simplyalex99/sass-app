@@ -5,19 +5,20 @@ import {
   INTERNAL_SERVER_ERROR,
   BUSINESS_EMAIL,
 } from '@/constants'
-import {
-  userService,
-  subscriptionService,
-  userAccountService,
-  formatSchemaErrorMessages,
-  log,
-  createEmailVerificationRequest,
-  createEmailVerificationHtml,
-  sendVerificationEmail,
-} from '@/utils'
+
 import { RegisterUserSchema } from '@/lib/zod/schemas/registerUser'
 
 import { RegisterUserBody } from '@/types/api'
+import { formatSchemaErrorMessages } from '@/utils/helpers/formatSchemaErrorsUtil'
+import { userService } from '@/utils/services/db/user'
+import { userAccountService } from '@/utils/services/db/userAccount'
+import { subscriptionService } from '@/utils/services/db/subscription'
+import {
+  createEmailVerificationRequest,
+  sendVerificationEmail,
+} from '@/utils/helpers/otp'
+import { createEmailVerificationHtml } from '@/utils/others/createEmailVerificationHtml'
+import log from '@/utils/others/log'
 
 export const POST = async (
   request: Request

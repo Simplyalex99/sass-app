@@ -1,18 +1,17 @@
 import { NextResponse } from 'next/server'
 import { BUSINESS_EMAIL } from '@/constants/socials'
-import {
-  createEmailVerificationHtml,
-  formatSchemaErrorMessages,
-  createEmailVerificationRequest,
-  sendVerificationEmail,
-  log,
-  userAccountService,
-} from '@/utils'
+import { userAccountService } from '@/utils/services/db/userAccount'
+import { log } from '@/utils/others/log'
 import { RequestOTPSchema } from '@/lib/zod/schemas/requestOtp'
 
 import { RequestOTPBody } from '@/types/api'
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorStatusCodeMessages'
-
+import { formatSchemaErrorMessages } from '@/utils/helpers/formatSchemaErrorsUtil'
+import { createEmailVerificationHtml } from '@/utils/others/createEmailVerificationHtml'
+import {
+  sendVerificationEmail,
+  createEmailVerificationRequest,
+} from '@/utils/helpers/otp'
 export const POST = async (
   request: Request
 ): Promise<NextResponse<RequestOTPBody>> => {

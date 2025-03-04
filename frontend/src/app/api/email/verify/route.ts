@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server'
 import { MagicLinkSchema } from '@/lib/zod/schemas/magicLink'
-import {
-  formatSchemaErrorMessages,
-  verifyOTP,
-  userService,
-  log,
-  userAccountService,
-} from '@/utils/index'
+import { userService } from '@/utils/services/db/user'
+import { userAccountService } from '@/utils/services/db/userAccount'
+import { log } from '@/utils/others/log'
+
+import { formatSchemaErrorMessages } from '@/utils/helpers/formatSchemaErrorsUtil'
+import { verifyOTP } from '@/utils/helpers/otp'
 import { VerifyEmailBody } from '@/types/api'
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorStatusCodeMessages'
 
