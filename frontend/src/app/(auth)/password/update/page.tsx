@@ -12,10 +12,11 @@ import {
   CardDescription,
   Input,
 } from '@/components'
+import { useSearchParams } from 'next/navigation'
 import { PasswordUpdateBody } from '@/types/api'
 
 import { fetchData } from '@/utils/others/fetchData'
-
+import { v4 as uuid4 } from 'uuid'
 import { passwordRequirements } from '@/constants/form'
 import { updatePasswordApi } from '@/constants/api'
 import { signInLink } from '@/constants/links'
@@ -23,36 +24,41 @@ import { signInLink } from '@/constants/links'
 import { validatePassword } from '@/utils/helpers/validatePasswordUtil'
 import { validateConfirmPassword } from '@/utils/helpers/validateFormData'
 interface IFormSubmit {
-  passwordErrors: []
+  passwordErrors: string[]
   confirmError: null | string
   onSubmitError: null | string
 }
 
 const PasswordUpdatePage = () => {
+  const searchParams = useSearchParams()
+  const otpParam = searchParams.get('otp') ?? ''
+
   const [formData, setFormData] = useState({
     plainTextPassword: '',
     confirmPassword: '',
-    token: '',
+    otp: otpParam,
   })
   const [formError, setFormError] = useState<IFormSubmit>({
     passwordErrors: [],
     confirmError: null,
     onSubmitError: null,
   })
+
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmVisible, setIsConfirmVisible] = useState(false)
-  const [onSuccess, setOnSuccess] = useState(true)
+  const [onSuccess, setOnSuccess] = useState(false)
   const onSubmitHandler = async () => {
-    const { token, plainTextPassword, confirmPassword } = formData
+    const { otp, plainTextPassword, confirmPassword } = formData
 
     const confirmError = validateConfirmPassword(
       plainTextPassword,
       confirmPassword
     )
-    const passwordError = validatePassword(plainTextPassword)
-    if (confirmError || passwordError.length === 0) {
+    const passwordErrors = validatePassword(plainTextPassword)
+
+    if (confirmError !== null || passwordErrors.length !== 0) {
       setFormError((prev) => {
-        return { ...prev, confirmError, passwordErrors }
+        return { ...prev, confirmError, passwordErrors: passwordErrors }
       })
 
       return
@@ -62,7 +68,7 @@ const PasswordUpdatePage = () => {
       const data = await fetchData<PasswordUpdateBody>(updatePasswordApi, {
         method: 'POST',
         body: JSON.stringify({
-          otp: token,
+          otp,
           passwordForm: {
             plainTextPassword,
             confirmPassword,
@@ -164,9 +170,9 @@ const PasswordUpdatePage = () => {
               )}
               {passwordErrors.length !== 0 && (
                 <ul>
-                  {passwordErrors.map((error, index) => {
+                  {passwordErrors.map((error) => {
                     return (
-                      <li key={index} className="text-sm text-red-500">
+                      <li key={uuid4()} className="text-sm text-red-500">
                         &#x2022; {error}
                       </li>
                     )
