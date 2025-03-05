@@ -3,7 +3,7 @@ import { userService } from '../services/db/user'
 import { verificationTokenService } from '../services/db/verificationToken'
 import { VERIFCATION_ERROR_STATES } from '@/constants/errorStatusCodeMessages'
 import { BUSINESS_NAME } from '@/constants/socials'
-import { createSixDigitOTP, createOTP } from '../tokens/createOneTimePasscode'
+import { createSixDigitOTP, createOTP } from './createOneTimePasscode'
 const MAX_FAILED_ATTEMPTS = 3
 const MAX_FAILED_SESSIONS = 2
 

@@ -14,7 +14,7 @@ import {
   CardFooter,
 } from '@/components'
 import { CheckIcon } from 'lucide-react'
-import { formatCompactNumbers } from '@/utils/helpers/formatCompactNumbers'
+import { formatCompactNumbers } from '@/helpers/formatCompactNumbers'
 import { cn } from '@/utils/others/cn'
 
 export const Pricing = () => {

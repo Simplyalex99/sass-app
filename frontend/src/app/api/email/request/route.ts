@@ -6,12 +6,12 @@ import { RequestOTPSchema } from '@/lib/zod/schemas/requestOtp'
 
 import { RequestOTPBody } from '@/types/api'
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorStatusCodeMessages'
-import { formatSchemaErrorMessages } from '@/utils/helpers/formatSchemaErrorsUtil'
+import { formatSchemaErrorMessages } from '@/helpers/formatSchemaErrorsUtil'
 import { createEmailVerificationHtml } from '@/utils/others/createEmailVerificationHtml'
 import {
   sendVerificationEmail,
   createEmailVerificationRequest,
-} from '@/utils/helpers/otp'
+} from '@/utils/tokens/otp'
 export const POST = async (
   request: Request
 ): Promise<NextResponse<RequestOTPBody>> => {

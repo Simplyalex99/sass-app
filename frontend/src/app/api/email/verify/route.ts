@@ -4,8 +4,8 @@ import { userService } from '@/utils/services/db/user'
 import { userAccountService } from '@/utils/services/db/userAccount'
 import { log } from '@/utils/others/log'
 
-import { formatSchemaErrorMessages } from '@/utils/helpers/formatSchemaErrorsUtil'
-import { verifyOTP } from '@/utils/helpers/otp'
+import { formatSchemaErrorMessages } from '@/helpers/formatSchemaErrorsUtil'
+import { verifyOTP } from '@/utils/tokens/otp'
 import { VerifyEmailBody } from '@/types/api'
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorStatusCodeMessages'
 
