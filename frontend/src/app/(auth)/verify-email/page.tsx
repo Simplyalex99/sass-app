@@ -12,7 +12,7 @@ import {
   OTPInput,
 } from '@/components'
 import { useSearchParams } from 'next/navigation'
-import { fetchToken } from '@/utils/api/fetchToken'
+import { fetchEmailVerification } from '@/utils/api/fetchToken'
 
 import { fetchData } from '@/utils/others/fetchData'
 
@@ -40,7 +40,7 @@ const VerifyEmailPage = () => {
     setResponseData((prev) => {
       return { ...prev, isLoading: true }
     })
-    const { error } = await fetchToken(userId)
+    const { error } = await fetchEmailVerification(userId)
     if (error) {
       responseError = error
     }

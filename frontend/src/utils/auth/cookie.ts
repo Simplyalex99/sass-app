@@ -7,7 +7,6 @@ import {
   ACCESS_TOKEN_KEY,
 } from '@/constants'
 import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies'
-
 /**
  * Abstract Class CookieUtil
  *
@@ -51,15 +50,14 @@ export class JWTCookieUtil extends CookieUtil {
     const accessToken = data[0]
     const refreshToken = data[1]
     const isHttpOnly = process.env.NODE_ENV === 'development' ? false : true
-    cookieStore.set(REFRESH_TOKEN_KEY + '_', refreshToken, {
+    cookieStore.set(REFRESH_TOKEN_KEY, refreshToken, {
       expires: createCookieExpiryDateInMilliseconds(
         REFRESH_TOKEN_EXPIRY_DATE_IN_SECONDS
       ),
       httpOnly: isHttpOnly,
-      path: '/refresh',
       ...secureCookieOptions,
     })
-    cookieStore.set(ACCESS_TOKEN_KEY + '_', accessToken, {
+    cookieStore.set(ACCESS_TOKEN_KEY, accessToken, {
       expires: createCookieExpiryDateInMilliseconds(
         ACCESS_TOKEN_EXPIRY_DATE_IN_SECONDS
       ),
@@ -76,9 +74,11 @@ export class JWTCookieUtil extends CookieUtil {
     if (!cookieStore) {
       return undefined
     }
+
     const refreshStore = cookieStore.get(REFRESH_TOKEN_KEY)
     const accessStore = cookieStore.get(ACCESS_TOKEN_KEY)
     const tokens: Array<undefined | string> = [undefined, undefined]
+
     if (accessStore !== undefined) {
       const accessToken = accessStore.value
       tokens[0] = accessToken

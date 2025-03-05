@@ -16,14 +16,17 @@ import { BUSINESS_NAME } from '@/constants/socials'
 import { forgotPasswordLink } from '@/constants/links'
 import Link from 'next/link'
 import { signIn } from 'next-auth/react'
+import { fetchSignIn } from '@/utils/api/fetchToken'
+import { useRouter } from 'next/navigation'
+
 const SignInPage = () => {
   const [loginCredentials, setLoginCredentials] = useState({
     email: '',
-    plainTextPassword: '',
+    password: '',
   })
-
+  const router = useRouter()
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-
+  const [errorMessage, setErrorMessage] = useState<undefined | string>()
   const onChangeLoginHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const updatedInputs = {
       ...loginCredentials,
@@ -34,7 +37,17 @@ const SignInPage = () => {
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible)
   }
-  const { email, plainTextPassword } = loginCredentials
+  const emailSignInHandler = async () => {
+    const { email, password } = loginCredentials
+    const { body } = await fetchSignIn(email, password)
+    const { error } = body
+    if (error) {
+      setErrorMessage(error)
+      return
+    }
+    router.push('/dashboard')
+  }
+  const { email, password } = loginCredentials
   return (
     <Card className="p-6">
       <CardHeader className="space-y-1">
@@ -83,15 +96,16 @@ const SignInPage = () => {
             placeholder="m@example.com"
             value={email}
             onChange={onChangeLoginHandler}
+            name="email"
           />
         </div>
         <Label htmlFor="password">Password</Label>
         <Input
           id="password"
           type={isPasswordVisible ? 'text' : 'password'}
-          name="plainTextPassword"
-          value={plainTextPassword}
+          value={password}
           onChange={onChangeLoginHandler}
+          name="password"
         />
         <div className="flex items-center gap-2">
           <Input
@@ -110,7 +124,12 @@ const SignInPage = () => {
         </Link>
       </CardContent>
       <CardFooter>
-        <Button className="w-full">Sign-in</Button>
+        <Button className="w-full" onClick={emailSignInHandler}>
+          Sign-in
+        </Button>
+      </CardFooter>
+      <CardFooter>
+        {errorMessage && <p className="text-xs text-red-500">{errorMessage}</p>}
       </CardFooter>
       <CardFooter>
         <div className="relative grid w-full items-center">

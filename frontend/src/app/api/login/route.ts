@@ -4,12 +4,11 @@ import { isPasswordCorrect } from '@/helpers/password'
 import {
   INVALID_LOGIN,
   ACCOUNT_LOCKED,
-  EMAIL_UNVERFIED,
   MAX_LOGIN_ATTEMPT,
   TOO_MANY_REQUEST_WITH_TIME,
   INTERNAL_SERVER_ERROR,
 } from '@/constants'
-import { LoginBody } from '@/types/api'
+import { SignInBody } from '@/types/api'
 import { LoginSchema } from '@/lib'
 import { cookies } from 'next/headers'
 import { userAccountService } from '@/utils/services/db/userAccount'
@@ -20,9 +19,12 @@ import { formatTime } from '@/helpers/formatTime'
 import { JWTUtil } from '@/utils/auth/jwt'
 import { JWTCookieUtil } from '@/utils/auth/cookie'
 import log from '@/utils/others/log'
+import { redirect } from 'next/navigation'
+import { verifyEmailLink } from '@/constants/links'
+
 export const POST = async (
   request: Request
-): Promise<NextResponse<LoginBody>> => {
+): Promise<NextResponse<SignInBody>> => {
   try {
     const body = await request.json()
     const result = LoginSchema.safeParse(body)
@@ -92,10 +94,7 @@ export const POST = async (
       return NextResponse.json({ error: INVALID_LOGIN }, { status: 401 })
     }
     if (!emailIsVerified) {
-      return NextResponse.json(
-        { error: EMAIL_UNVERFIED, isEmailVerified: false },
-        { status: 200 }
-      )
+      redirect(`${verifyEmailLink}?id=${userId}`)
     }
     const accessToken = JWTUtil.createAccessToken({ userId })
     const refreshToken = JWTUtil.createRefreshToken({ userId })
@@ -105,8 +104,7 @@ export const POST = async (
     return NextResponse.json(
       {
         user: {
-          isEmailVerified: true,
-          data: { userId },
+          userId,
         },
       },
       { status: 200 }

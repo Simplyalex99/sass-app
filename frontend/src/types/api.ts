@@ -14,11 +14,10 @@ export type RequestOTPBody = {
   error?: string
   message?: string
 }
-export type LoginBody = {
+export type SignInBody = {
   error?: string
   user?: {
-    isEmailVerified: boolean
-    data?: { userId: string }
+    userId: string
   }
 }
 export type PasswordUpdateBody = {
