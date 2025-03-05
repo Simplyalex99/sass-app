@@ -1,4 +1,4 @@
-'use client'
+/* 'use client'
 import { useQuery } from '@tanstack/react-query'
 
 import { fetchToken } from '@/utils/api/fetchToken'
@@ -10,3 +10,4 @@ export const useFetchToken = (id: string | null) => {
     queryFn: () => fetchToken(id),
   })
 }
+ */

@@ -1,7 +1,7 @@
 import { fetchData } from '../others/fetchData'
-import { RequestOTPBody } from '@/types/api'
-import { requestOtpApi, resetPasswordApi } from '@/constants/api'
-export const fetchToken = async (id: string | null) => {
+import { RequestOTPBody, SignInBody } from '@/types/api'
+import { requestOtpApi, resetPasswordApi, signInApi } from '@/constants/api'
+export const fetchEmailVerification = async (id: string | null) => {
   const result = await fetchData<RequestOTPBody>(requestOtpApi, {
     method: 'POST',
     body: JSON.stringify({ userId: id }),
@@ -14,4 +14,14 @@ export const requestPasswordReset = async (email: string) => {
     body: JSON.stringify({ email }),
   })
   return result.body
+}
+export const fetchSignIn = async (email: string, plainTextPassword: string) => {
+  const result = await fetchData<SignInBody>(signInApi, {
+    method: 'POST',
+    body: JSON.stringify({
+      email,
+      plainTextPassword,
+    }),
+  })
+  return result
 }

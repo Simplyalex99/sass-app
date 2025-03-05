@@ -38,11 +38,11 @@ export class JWTUtil {
     })
     return refreshToken
   }
-  static verifyAccessToken(accessToken: string) {
+  static verifyAccessToken(accessToken: string, opts?: { complete: boolean }) {
     if (!ACCESS_TOKEN_SECRET) {
       throw new Error(accessTokenErrorMessage)
     }
-    const result = jwt.verify(accessToken, ACCESS_TOKEN_SECRET)
+    const result = jwt.verify(accessToken, ACCESS_TOKEN_SECRET, opts)
     return result
   }
 
