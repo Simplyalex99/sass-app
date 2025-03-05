@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { isPasswordValid } from '@/utils/helpers/validatePasswordUtil'
+import { isPasswordValid } from '@/helpers/validatePasswordUtil'
 import isEmail from 'validator/lib/isEmail'
 
 export const invalidEmail = 'Invalid email address'

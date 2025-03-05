@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server'
 import { PasswordUpdateSchema } from '@/lib/zod/schemas/updatePassword'
 
-import { formatSchemaErrorMessages } from '@/utils/helpers/formatSchemaErrorsUtil'
+import { formatSchemaErrorMessages } from '@/helpers/formatSchemaErrorsUtil'
 import { log } from '@/utils/others/log'
 import { userAccountService } from '@/utils/services/db/userAccount'
 import { verificationTokenService } from '@/utils/services/db/verificationToken'
-import { verifyOTP } from '@/utils/helpers/otp'
+import { verifyOTP } from '@/utils/tokens/otp'
 
 import { PasswordUpdateBody } from '@/types/api'
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorStatusCodeMessages'

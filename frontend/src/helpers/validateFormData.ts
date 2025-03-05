@@ -1,9 +1,8 @@
-import { isEmailValid } from './isEmailValid'
 import { validatePassword } from './validatePasswordUtil'
 import { FormDataType, FormErrorType } from '@/types/form'
-
+import isEmail from 'validator/lib/isEmail'
 const validateEmail = (email: string) => {
-  if (!isEmailValid(email)) {
+  if (!isEmail(email)) {
     return 'Invalid email'
   }
   return null

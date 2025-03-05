@@ -21,8 +21,8 @@ import { passwordRequirements } from '@/constants/form'
 import { updatePasswordApi } from '@/constants/api'
 import { signInLink } from '@/constants/links'
 
-import { validatePassword } from '@/utils/helpers/validatePasswordUtil'
-import { validateConfirmPassword } from '@/utils/helpers/validateFormData'
+import { validatePassword } from '@/helpers/validatePasswordUtil'
+import { validateConfirmPassword } from '@/helpers/validateFormData'
 interface IFormSubmit {
   passwordErrors: string[]
   confirmError: null | string

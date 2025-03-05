@@ -1,7 +1,7 @@
 import { eq, sql } from 'drizzle-orm'
 import { db } from '@/lib/drizzle/database'
 import { UserAccountTable } from '@/lib/drizzle/schema'
-import { generateHashedPassword } from '../../helpers/password'
+import { generateHashedPassword } from '../../../helpers/password'
 export const userAccountService = {
   getUserByEmail: async (email: string) => {
     const result = await db

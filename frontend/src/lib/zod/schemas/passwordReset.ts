@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { isPasswordValid } from '@/utils/helpers/validatePasswordUtil'
+import { isPasswordValid } from '@/helpers/validatePasswordUtil'
 import { invalidPassword, invalidConfirmation } from './registerUser'
 export const ResetPasswordSchema = z.object({
   token: z.string({ message: 'Missing required field token' }),

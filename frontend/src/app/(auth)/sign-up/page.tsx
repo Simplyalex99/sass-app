@@ -11,8 +11,8 @@ import {
   Input,
 } from '@/components'
 import { RegisterUserBody } from '@/types/api'
-import { validateConfirmPassword } from '@/utils/helpers/validateFormData'
-import { validatePassword } from '@/utils/helpers/validatePasswordUtil'
+import { validateConfirmPassword } from '@/helpers/validateFormData'
+import { validatePassword } from '@/helpers/validatePasswordUtil'
 import { fetchData } from '@/utils/others/fetchData'
 import isEmail from 'validator/lib/isEmail'
 
