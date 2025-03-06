@@ -1,12 +1,10 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import {
-  JWTCookieUtil,
-  createHashedToken,
-  InvalidateJwtUtil,
-  log,
-} from '@/utils'
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorStatusCodeMessages'
+import { JWTCookieUtil } from '@/utils/auth/cookie'
+import { createHashedToken } from '@/utils/tokens/token'
+import { InvalidateJwtUtil } from '@/utils/auth/invalidateJwt'
+import log from '@/utils/others/log'
 const accessTokenSecret = process.env.JWT_ACCESS_TOKEN_SECRET
 if (!accessTokenSecret) {
   throw new Error('Access token secret not defined')
