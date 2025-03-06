@@ -38,7 +38,10 @@ export class JWTUtil {
     })
     return refreshToken
   }
-  static verifyAccessToken(accessToken: string, opts?: { complete: boolean }) {
+  static verifyAccessToken(
+    accessToken: string,
+    opts?: { complete: boolean; ignoreExpiration: boolean }
+  ) {
     if (!ACCESS_TOKEN_SECRET) {
       throw new Error(accessTokenErrorMessage)
     }
