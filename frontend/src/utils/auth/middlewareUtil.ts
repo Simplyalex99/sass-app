@@ -1,71 +1,94 @@
 import { JWTCookieUtil } from './cookie'
+import { InvalidateJwtUtil } from './invalidateJwt'
 import { JWTUtil } from './jwt'
-import { JwtPayload } from 'jsonwebtoken'
-import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies'
-import { InvalidateJwtUtil } from '@/utils/auth/invalidateJwt'
-export const validateAccessToken = async (
-  cookieStore: ReadonlyRequestCookies
-): Promise<{
-  isExpired: boolean
-  isValidAccessToken: boolean
-  accessToken?: string
-}> => {
+import { cookies } from 'next/headers'
+import { fetchHashToken } from '@/utils/api/api'
+type validateTokensType = {
+  isAuthenticated: boolean
+  newTokens: null | { accessToken: string; refreshToken: string }
+}
+export const validateTokens = async (): Promise<validateTokensType> => {
+  const cookieUtil = new JWTCookieUtil()
+  const cookieStore = await cookies()
+
+  const tokens = cookieUtil.readCookie(cookieStore)
+
+  if (!tokens) return { isAuthenticated: false, newTokens: null }
+
+  const [accessToken, refreshToken] = tokens
+
+  const { isValidToken, isExpired } = await validateAccessToken(accessToken)
+
+  if (!isValidToken) {
+    return { isAuthenticated: false, newTokens: null }
+  }
+  if (isValidToken && isExpired === false) {
+    return { isAuthenticated: true, newTokens: null }
+  }
+
+  const result = await renewTokens(refreshToken)
+
+  return result
+}
+
+const validateAccessToken = async (accessToken?: string) => {
   try {
-    const cookieUtil = new JWTCookieUtil()
-    const tokens = cookieUtil.readCookie(cookieStore)
-    if (!tokens) {
-      return { isExpired: true, isValidAccessToken: false }
+    if (accessToken == undefined) {
+      return { isValidToken: true, isExpired: true }
+    }
+    const payload = (await JWTUtil.verifyAccessToken(accessToken)).payload
+
+    const response = await fetchHashToken(accessToken)
+
+    const { body } = response
+    const hashedAccessToken = body.token
+
+    const invalidAccessToken =
+      await InvalidateJwtUtil.getInvalidToken(hashedAccessToken)
+
+    if (invalidAccessToken) {
+      return { isValidToken: false, isExpired: false }
     }
 
-    const accessToken = tokens[0] ? tokens[0] : ''
-    const payload = JWTUtil.verifyAccessToken(accessToken, {
-      complete: true,
-      ignoreExpiration: true,
-    }) as JwtPayload
-    const cachedAccessToken = InvalidateJwtUtil.getInvalidToken(accessToken)
-    const expiresAt = payload.exp
-    const now = Date.now()
-    if (!expiresAt || cachedAccessToken !== null) {
-      return { isExpired: true, isValidAccessToken: false }
-    }
-    if (expiresAt < now) {
-      return { isExpired: true, isValidAccessToken: true, accessToken }
-    }
-    return { isExpired: false, isValidAccessToken: true, accessToken }
+    const isExpired = payload.exp !== undefined && payload.exp < Date.now()
+    return { isExpired, isValidToken: true }
   } catch {
-    return { isExpired: true, isValidAccessToken: false }
+    return { isValidToken: false, isExpired: false }
   }
 }
-export const validateRefreshToken = async (
-  cookieStore: ReadonlyRequestCookies
-): Promise<{ isValidRefreshToken: boolean }> => {
+
+const renewTokens = async (refreshToken?: string) => {
   try {
+    if (refreshToken === undefined) {
+      return { isAuthenticated: false, newTokens: null }
+    }
+    await JWTUtil.verifyRefreshToken(refreshToken)
+
+    const response = await fetchHashToken(refreshToken)
+    const { body } = response
+    const hashedRefreshToken = body.token
+    const invalidRefreshToken =
+      await InvalidateJwtUtil.getInvalidToken(hashedRefreshToken)
+    if (invalidRefreshToken) {
+      return { isAuthenticated: false, newTokens: null }
+    }
+
+    const { userId } = await JWTUtil.decodeRefreshToken(refreshToken)
+
+    const newAccessToken = await JWTUtil.createAccessToken({ userId })
+
+    const newRefreshToken = await JWTUtil.createRefreshToken({ userId })
+
     const cookieUtil = new JWTCookieUtil()
-    const tokens = cookieUtil.readCookie(cookieStore)
-    if (!tokens) {
-      return { isValidRefreshToken: false }
+    const cookieStore = await cookies()
+
+    cookieUtil.clearCookie(cookieStore)
+    cookieUtil.saveCookie([newAccessToken, newRefreshToken], cookieStore)
+    return {
+      isAuthenticated: true,
+      newTokens: { accessToken: newAccessToken, refreshToken: newRefreshToken },
     }
-    const refreshToken = tokens[1] ? tokens[1] : ''
-    JWTUtil.verifyRefreshToken(refreshToken)
-    const cachedRefreshToken =
-      await InvalidateJwtUtil.getInvalidToken(refreshToken)
-    if (cachedRefreshToken !== null) {
-      return { isValidRefreshToken: false }
-    }
-    return { isValidRefreshToken: true }
   } catch {
-    return { isValidRefreshToken: false }
+    return { isAuthenticated: false, newTokens: null }
   }
-}
-export const renewTokens = (
-  cookieStore: ReadonlyRequestCookies,
-  accessToken: string
-) => {
-  const payload = JWTUtil.decodeToken(accessToken)
-  const userId = payload.userId
-  const newAccessToken = JWTUtil.createAccessToken({ userId })
-  const newRefreshToken = JWTUtil.createRefreshToken({ userId })
-  const jwtCookie = new JWTCookieUtil()
-  jwtCookie.clearCookie(cookieStore)
-  jwtCookie.saveCookie([newAccessToken, newRefreshToken], cookieStore)
 }

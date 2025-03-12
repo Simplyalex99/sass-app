@@ -18,7 +18,6 @@ import { getLoginTimeout } from '@/helpers/getLoginTimeout'
 import { formatTime } from '@/helpers/formatTime'
 import { JWTUtil } from '@/utils/auth/jwt'
 import { JWTCookieUtil } from '@/utils/auth/cookie'
-import log from '@/utils/others/log'
 import { redirect } from 'next/navigation'
 import { verifyEmailLink } from '@/constants/links'
 
@@ -43,7 +42,7 @@ export const POST = async (
     const userAccounts = services[0]
     const userData = services[1]
     if (userAccounts.length === 0 || userData.length === 0) {
-      mockSecureLoginAttempt()
+      await mockSecureLoginAttempt()
       return NextResponse.json({ error: INVALID_LOGIN }, { status: 401 })
     }
 
@@ -89,18 +88,24 @@ export const POST = async (
       }
     }
 
-    if (!isPasswordCorrect(plainTextPassword, passwordHash, passwordSalt)) {
+    const passwordResponse = await isPasswordCorrect(
+      plainTextPassword,
+      passwordHash,
+      passwordSalt
+    )
+    if (!passwordResponse.isPasswordCorrect) {
       userAccountService.addFailedAttempt(email, now)
       return NextResponse.json({ error: INVALID_LOGIN }, { status: 401 })
     }
     if (!emailIsVerified) {
       redirect(`${verifyEmailLink}?id=${userId}`)
     }
-    const accessToken = JWTUtil.createAccessToken({ userId })
-    const refreshToken = JWTUtil.createRefreshToken({ userId })
+    const accessToken = await JWTUtil.createAccessToken({ userId })
+    const refreshToken = await JWTUtil.createRefreshToken({ userId })
     const jwtUtilCookie = new JWTCookieUtil()
     const cookieStore = await cookies()
     jwtUtilCookie.saveCookie([accessToken, refreshToken], cookieStore)
+
     return NextResponse.json(
       {
         user: {
@@ -110,7 +115,7 @@ export const POST = async (
       { status: 200 }
     )
   } catch (err) {
-    log.error(err)
+    console.log(err)
     return NextResponse.json(
       {
         error: INTERNAL_SERVER_ERROR,

@@ -1,4 +1,5 @@
 import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers'
+import { NextRequest } from 'next/server'
 
 const allowedDomain = process.env.NEXT_PUBLIC_URL
 if (!allowedDomain) {
@@ -15,8 +16,12 @@ interface IValidateReferer {
  * @returns object
  */
 
-export const validateReferer = (headers: ReadonlyHeaders): IValidateReferer => {
-  const referer = headers.get('referer')
+export const validateReferer = (
+  headers: ReadonlyHeaders,
+  request: NextRequest
+): IValidateReferer => {
+  const referer = headers.get('referer') ?? request?.url
+  console.log(referer)
   if (!referer) {
     return {
       error: 'Forbidden: No Referer;',

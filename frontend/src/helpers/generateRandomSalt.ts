@@ -1,5 +1,5 @@
-import crypto from 'crypto'
-export const generateRandomSalt = () => {
-  const randomSalt = crypto.randomBytes(16).toString('hex')
-  return randomSalt
+import { fetchSalt } from '@/utils/api/api'
+export const generateRandomSalt = async () => {
+  const response = await fetchSalt()
+  return response.body
 }

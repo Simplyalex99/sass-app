@@ -1,12 +1,36 @@
 'use client'
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { BrandLogo, Button } from '@/components'
+import { BrandLogo, Button, SkeletonButton } from '@/components'
 import { MenuSVG } from '../svgs/menu'
+import { signInLink } from '@/constants/links'
+import { fetchSignOut } from '@/utils/api/api'
+
+import { signOut } from 'next-auth/react'
+import { useUserSession } from '@/hooks/reactQuery'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { fetchUser } from '@/utils/reactQuery/api'
+import { userKey } from '@/constants/reactQuery'
 export const Navbar = () => {
-  const userIsLoggedIn = false
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const queryClient = useQueryClient()
+  const { data, isLoading } = useUserSession()
+
+  const { mutateAsync } = useMutation({
+    mutationFn: fetchUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [userKey] })
+    },
+  })
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
+  const signOutHandler = async () => {
+    signOut()
+    await fetchSignOut()
+    await mutateAsync()
+  }
+
+  const isSignedIn = data?.user?.userId
+
   return (
     <header className="fixed top-0 z-10 flex w-full bg-background/95 py-6 shadow-xl">
       <nav className="container relative flex items-center gap-10">
@@ -29,16 +53,16 @@ export const Navbar = () => {
                   About
                 </Link>
                 <span className="text-lg">
-                  {userIsLoggedIn ? (
-                    <Button size="lg">
-                      <Link href="#" className="text-lg">
-                        Dashboard
-                      </Link>
+                  {isLoading ? (
+                    <SkeletonButton />
+                  ) : isSignedIn ? (
+                    <Button onClick={signOutHandler} className="text-lg">
+                      Sign out
                     </Button>
                   ) : (
                     <Button>
-                      <Link href="/sign-in" className="text-lg">
-                        Login
+                      <Link href={signInLink} className="text-lg">
+                        Sign in
                       </Link>
                     </Button>
                   )}
@@ -62,16 +86,16 @@ export const Navbar = () => {
             About
           </Link>
           <span className="text-lg">
-            {userIsLoggedIn ? (
-              <Button size="lg">
-                <Link href="#" className="text-lg">
-                  Dashboard
-                </Link>
+            {isLoading ? (
+              <SkeletonButton />
+            ) : isSignedIn ? (
+              <Button onClick={signOutHandler} className="text-lg">
+                Sign out
               </Button>
             ) : (
               <Button>
-                <Link href="/login" className="text-lg">
-                  Login
+                <Link href={signInLink} className="text-lg">
+                  Sign in
                 </Link>
               </Button>
             )}

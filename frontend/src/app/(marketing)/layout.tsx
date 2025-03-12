@@ -1,5 +1,5 @@
 import React from 'react'
-import { Navbar } from './_components/index'
+import { Navbar } from './_components'
 
 const MarketingLayout = ({ children }: { children: React.ReactNode }) => {
   return (
