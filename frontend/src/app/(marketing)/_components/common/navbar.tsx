@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { BrandLogo, Button, SkeletonButton } from '@/components'
 import { MenuSVG } from '../svgs/menu'
-import { signInLink } from '@/constants/links'
+import { dashboardLink, signInLink } from '@/constants/links'
 import { fetchSignOut } from '@/utils/api/api'
 
 import { signOut } from 'next-auth/react'
@@ -43,6 +43,9 @@ export const Navbar = () => {
           {isMenuOpen && (
             <div className="fixed right-0 top-0 min-h-screen w-2/3 bg-background/95">
               <div className="flex flex-col items-end gap-8 px-8 py-8">
+                <Link href={dashboardLink} className="text-lg">
+                  Dashboard
+                </Link>
                 <Link href="#" className="text-lg">
                   Features
                 </Link>
@@ -76,6 +79,9 @@ export const Navbar = () => {
         </div>
         {/* Medium & Large Screens */}
         <div className="hidden items-center md:flex md:gap-10">
+          <Link href={dashboardLink} className="text-lg">
+            Dashboard
+          </Link>
           <Link href="#" className="text-lg">
             Features
           </Link>
