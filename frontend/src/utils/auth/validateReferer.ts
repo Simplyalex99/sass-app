@@ -21,7 +21,6 @@ export const validateReferer = (
   request: NextRequest
 ): IValidateReferer => {
   const referer = headers.get('referer') ?? request?.url
-  console.log(referer)
   if (!referer) {
     return {
       error: 'Forbidden: No Referer;',
