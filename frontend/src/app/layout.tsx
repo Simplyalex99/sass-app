@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'
-
+import { WithReactQuery } from '@/components/providers/withReactQuery'
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
   variable: '--font-geist-sans',
@@ -28,7 +28,7 @@ const RootLayout = ({
       <body
         className={`${geistSans.variable} ${geistMono.variable} bg-background font-sans antialiased`}
       >
-        {children}
+        <WithReactQuery>{children}</WithReactQuery>
       </body>
     </html>
   )

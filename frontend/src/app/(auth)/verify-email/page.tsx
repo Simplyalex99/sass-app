@@ -12,7 +12,7 @@ import {
   OTPInput,
 } from '@/components'
 import { useSearchParams } from 'next/navigation'
-import { fetchEmailVerification } from '@/utils/api/fetchToken'
+import { fetchEmailVerification } from '@/utils/api/api'
 
 import { fetchData } from '@/utils/others/fetchData'
 

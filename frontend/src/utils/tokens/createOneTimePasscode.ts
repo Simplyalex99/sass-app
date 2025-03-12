@@ -1,6 +1,7 @@
-import crypto from 'crypto'
-export const createSixDigitOTP = () => {
-  return crypto.randomInt(100000, 999999)
+import { fetchOtpCode, fetchOtpUrl } from '@/utils/api/api'
+export const createSixDigitOTP = async () => {
+  const response = await fetchOtpCode()
+  return response.body.otp
 }
 /**
  *
@@ -8,6 +9,7 @@ export const createSixDigitOTP = () => {
  * @note max bytes is 256^6
  * @returns string
  */
-export const createOTP = (bytes: number) => {
-  return crypto.randomBytes(bytes).toString('hex')
+export const createOTP = async (bytes: number) => {
+  const response = await fetchOtpUrl(bytes)
+  return response.body.otp
 }

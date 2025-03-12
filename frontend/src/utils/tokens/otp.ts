@@ -133,7 +133,7 @@ export const createPasswordResetRequest = async (
   email: string,
   bytes: number
 ) => {
-  const oneTimePassCode = createOTP(bytes)
+  const oneTimePassCode = await createOTP(bytes)
   await verificationTokenService.deleteOneTimePasscode(email)
   const now = new Date()
   const expiresAtTenMinutes = new Date(now.getTime() + 10 * 60 * 1000)

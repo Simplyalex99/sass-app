@@ -27,3 +27,27 @@ export type PasswordResetBody = {
   error?: string
   message?: string
 }
+export type TokenBody = {
+  token: string
+}
+export type HashBody = {
+  hashedPassword: string
+  salt: string
+}
+export type HashVerifyBody = {
+  isPasswordCorrect: boolean
+}
+export type CreateSaltBody = {
+  salt: string
+}
+export type OtpBody = {
+  otp: string
+}
+export type SignOutBody = {
+  error?: string
+}
+export type UserSessionBody = {
+  user?: {
+    userId?: string
+  }
+}

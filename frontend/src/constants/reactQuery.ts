@@ -1,1 +1,1 @@
-export const fetchTokenKey = 'request-token'
+export const userKey = 'user-session'

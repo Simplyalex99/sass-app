@@ -1,16 +1,11 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import {
-  JWTCookieUtil,
-  createHashedToken,
-  InvalidateJwtUtil,
-  log,
-} from '@/utils'
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorStatusCodeMessages'
-const accessTokenSecret = process.env.JWT_ACCESS_TOKEN_SECRET
-if (!accessTokenSecret) {
-  throw new Error('Access token secret not defined')
-}
+import { JWTCookieUtil } from '@/utils/auth/cookie'
+import { createHashedToken } from '@/utils/tokens/token'
+import { InvalidateJwtUtil } from '@/utils/auth/invalidateJwt'
+import log from '@/utils/others/log'
+
 export const POST = async () => {
   try {
     const cookieStore = await cookies()
@@ -26,13 +21,12 @@ export const POST = async () => {
       return NextResponse.json({}, { status: 401 })
     }
     jwtCookieUtil.clearCookie(cookieStore)
+    const hashedAccessToken = await createHashedToken(accessToken)
+    const hashedRefreshToken = await createHashedToken(refreshToken)
 
-    const hashedAccessToken = createHashedToken(accessToken)
-    const hashedRefreshToken = createHashedToken(refreshToken)
-
-    Promise.all([
-      InvalidateJwtUtil.blacklistRefreshToken(hashedRefreshToken),
-      InvalidateJwtUtil.blacklistAccessToken(hashedAccessToken),
+    await Promise.all([
+      InvalidateJwtUtil.blacklistRefreshToken(hashedRefreshToken.token),
+      InvalidateJwtUtil.blacklistAccessToken(hashedAccessToken.token),
     ])
   } catch (err) {
     log.error(err)

@@ -13,7 +13,7 @@ import {
   Input,
 } from '@/components'
 
-import { requestPasswordReset } from '@/utils/api/fetchToken'
+import { requestPasswordReset } from '@/utils/api/api'
 
 import { signInLink } from '@/constants/links'
 type ResponseData = {

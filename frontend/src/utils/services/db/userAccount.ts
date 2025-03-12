@@ -1,7 +1,7 @@
 import { eq, sql } from 'drizzle-orm'
 import { db } from '@/lib/drizzle/database'
 import { UserAccountTable } from '@/lib/drizzle/schema'
-import { generateHashedPassword } from '../../../helpers/password'
+import { generateHashedPassword } from '@/helpers/password'
 export const userAccountService = {
   getUserByEmail: async (email: string) => {
     const result = await db
@@ -22,7 +22,8 @@ export const userAccountService = {
     email: string,
     plainTextPassword: string
   ): Promise<void> => {
-    const { hashedPassword, salt } = generateHashedPassword(plainTextPassword)
+    const { salt, hashedPassword } =
+      await generateHashedPassword(plainTextPassword)
     await db.insert(UserAccountTable).values({
       userId,
       email,
@@ -41,7 +42,8 @@ export const userAccountService = {
       .where(eq(UserAccountTable.email, email))
   },
   updatePassword: async (email: string, plainTextPassword: string) => {
-    const { hashedPassword, salt } = generateHashedPassword(plainTextPassword)
+    const { salt, hashedPassword } =
+      await generateHashedPassword(plainTextPassword)
     await db
       .update(UserAccountTable)
       .set({

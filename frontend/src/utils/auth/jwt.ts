@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken'
+import * as jwt from 'jose'
 import {
   REFRESH_TOKEN_EXPIRY_DATE_IN_SECONDS,
   ACCESS_TOKEN_EXPIRY_DATE_IN_SECONDS,
@@ -13,6 +13,14 @@ const accessTokenErrorMessage =
 type UserPayload = {
   userId: string
 }
+if (!ACCESS_TOKEN_SECRET) {
+  throw new Error(accessTokenErrorMessage)
+}
+if (!REFRESH_TOKEN_SECRET) {
+  throw new Error(refreshTokenErrorMessage)
+}
+const jwtAccessKey = jwt.base64url.decode(ACCESS_TOKEN_SECRET)
+const jwtRefreshKey = jwt.base64url.decode(REFRESH_TOKEN_SECRET)
 export class JWTUtil {
   private constructor() {
     if (this.constructor == JWTUtil) {
@@ -20,41 +28,56 @@ export class JWTUtil {
     }
   }
 
-  static createAccessToken(data: UserPayload) {
-    if (!ACCESS_TOKEN_SECRET) {
-      throw new Error(accessTokenErrorMessage)
-    }
-    const accessToken = jwt.sign(data, ACCESS_TOKEN_SECRET, {
-      expiresIn: ACCESS_TOKEN_EXPIRY_DATE_IN_SECONDS,
-    })
+  static async createAccessToken(data: UserPayload) {
+    const accessToken = await new jwt.SignJWT(data)
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime(`${ACCESS_TOKEN_EXPIRY_DATE_IN_SECONDS}s`)
+      .sign(jwtAccessKey)
     return accessToken
   }
-  static createRefreshToken(data: UserPayload) {
-    if (!REFRESH_TOKEN_SECRET) {
-      throw new Error(refreshTokenErrorMessage)
-    }
-    const refreshToken = jwt.sign(data, REFRESH_TOKEN_SECRET, {
-      expiresIn: REFRESH_TOKEN_EXPIRY_DATE_IN_SECONDS,
-    })
+  static async createRefreshToken(data: UserPayload) {
+    const refreshToken = await new jwt.SignJWT(data)
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime(`${REFRESH_TOKEN_EXPIRY_DATE_IN_SECONDS}s`)
+      .sign(jwtRefreshKey)
     return refreshToken
   }
-  static verifyAccessToken(accessToken: string, opts?: { complete: boolean }) {
-    if (!ACCESS_TOKEN_SECRET) {
-      throw new Error(accessTokenErrorMessage)
+  static async verifyAccessToken(
+    accessToken: string,
+    opts: { algorithms?: string[]; currentDate?: Date } = {
+      algorithms: ['HS256'],
+      currentDate: new Date(0),
     }
-    const result = jwt.verify(accessToken, ACCESS_TOKEN_SECRET, opts)
+  ) {
+    const result = await jwt.jwtVerify(accessToken, jwtAccessKey, {
+      ...opts,
+    })
+
     return result
   }
 
-  static verifyRefreshToken(refreshToken: string) {
-    if (!REFRESH_TOKEN_SECRET) {
-      throw new Error(refreshTokenErrorMessage)
+  static async verifyRefreshToken(
+    refreshToken: string,
+    opts: { algorithms?: string[]; currentDate?: Date } = {
+      algorithms: ['HS256'],
+      currentDate: new Date(0),
     }
-    const result = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET)
+  ) {
+    const result = await jwt.jwtVerify(refreshToken, jwtRefreshKey, {
+      ...opts,
+    })
     return result
   }
-  static decodeToken(token: string): UserPayload {
-    const decodedPayload = jwt.decode(token) as UserPayload
-    return decodedPayload
+  static async decodeAccessToken(token: string): Promise<UserPayload> {
+    const decodedPayload = await JWTUtil.verifyAccessToken(token)
+    return decodedPayload.payload as UserPayload
+  }
+  static async decodeRefreshToken(token: string): Promise<UserPayload> {
+    const decodedPayload = await JWTUtil.verifyRefreshToken(token, {
+      currentDate: new Date(),
+    })
+    return decodedPayload.payload as UserPayload
   }
 }

@@ -13,20 +13,40 @@ import {
   Icons,
 } from '@/components'
 import { BUSINESS_NAME } from '@/constants/socials'
-import { forgotPasswordLink } from '@/constants/links'
+import { dashboardLink, forgotPasswordLink } from '@/constants/links'
 import Link from 'next/link'
 import { signIn } from 'next-auth/react'
-import { fetchSignIn } from '@/utils/api/fetchToken'
+import { fetchSignIn } from '@/utils/api/api'
 import { useRouter } from 'next/navigation'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { fetchUser } from '@/utils/reactQuery/api'
+import { userKey } from '@/constants/reactQuery'
 
 const SignInPage = () => {
   const [loginCredentials, setLoginCredentials] = useState({
     email: '',
     password: '',
   })
+  const queryClient = useQueryClient()
+  const { mutateAsync } = useMutation({
+    mutationFn: fetchUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [userKey] })
+    },
+  })
   const router = useRouter()
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [errorMessage, setErrorMessage] = useState<undefined | string>()
+  const oauthSignIn = async (provider: string) => {
+    const response = await signIn(provider)
+    if (response?.ok) {
+      await mutateAsync()
+      router.push(dashboardLink)
+    }
+    if (response?.error) {
+      setErrorMessage('Email already exist. Try a different login method')
+    }
+  }
   const onChangeLoginHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const updatedInputs = {
       ...loginCredentials,
@@ -45,7 +65,7 @@ const SignInPage = () => {
       setErrorMessage(error)
       return
     }
-    router.push('/dashboard')
+    router.push(dashboardLink)
   }
   const { email, password } = loginCredentials
   return (
@@ -63,7 +83,7 @@ const SignInPage = () => {
           <Button
             variant="outline"
             className="hover:bg-slate-100"
-            onClick={() => signIn('github')}
+            onClick={() => oauthSignIn('github')}
           >
             <Icons.gitHub />
             GitHub
@@ -72,7 +92,7 @@ const SignInPage = () => {
           <Button
             variant="outline"
             className="hover:bg-slate-100"
-            onClick={() => signIn('google')}
+            onClick={() => oauthSignIn('google')}
           >
             <Icons.google />
             Google
@@ -129,7 +149,9 @@ const SignInPage = () => {
         </Button>
       </CardFooter>
       <CardFooter>
-        {errorMessage && <p className="text-xs text-red-500">{errorMessage}</p>}
+        {errorMessage && (
+          <p className="text-balance text-xs text-red-500">{errorMessage}</p>
+        )}
       </CardFooter>
       <CardFooter>
         <div className="relative grid w-full items-center">
