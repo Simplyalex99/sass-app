@@ -1,6 +1,7 @@
 import { getUser } from '@/utils/auth/getUser'
 import { NextRequest, NextResponse } from 'next/server'
 import { productService } from '@/utils/services/db/products'
+import { CACHE_TAGS, revalidateDbCache } from '@/utils/auth/cache'
 
 export const POST = async (
   request: NextRequest,
@@ -13,8 +14,8 @@ export const POST = async (
       { status: 400 }
     )
   }
-
-  const productId = params.id
+  const { id } = await params
+  const productId = id
   if (!productId || !user) {
     return NextResponse.json({ error: 'Bad request' }, { status: 400 })
   }
@@ -29,6 +30,11 @@ export const POST = async (
         { status: 500 }
       )
     }
+    revalidateDbCache({
+      tag: CACHE_TAGS.products,
+      userId: user.userId,
+      id: productId,
+    })
     return NextResponse.json({ message: 'Product deleted' }, { status: 200 })
   } catch (err) {
     console.log(err)

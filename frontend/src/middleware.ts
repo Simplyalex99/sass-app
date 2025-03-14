@@ -23,9 +23,13 @@ export const middleware = async (request: NextRequest) => {
     if (!success) {
       return NextResponse.json({ error: 'Too many request' }, { status: 429 })
     }
-
+    if (!process.env.NEXT_PUBLIC_URL) {
+      throw new Error('url not defined')
+    }
     const { isAuthenticated } = await validateTokens()
-
+    if (isAuthenticated && request.nextUrl.pathname.startsWith('/sign-in')) {
+      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL}/dashboard`)
+    }
     if (request.nextUrl.pathname.startsWith('/dashboard')) {
       if (!isAuthenticated) {
         redirect('/sign-in')

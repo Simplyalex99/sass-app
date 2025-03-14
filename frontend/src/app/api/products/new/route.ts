@@ -3,6 +3,7 @@ import { productService } from '@/utils/services/db/products'
 import { getUser } from '@/utils/auth/getUser'
 import { productDetailsSchema } from '@/lib/zod/schemas/dashboard/productDetails'
 import { formatSchemaErrorMessages } from '@/helpers/formatSchemaErrorsUtil'
+import { CACHE_TAGS, revalidateDbCache } from '@/utils/auth/cache'
 
 export const POST = async (request: NextRequest) => {
   const user = await getUser()
@@ -20,12 +21,17 @@ export const POST = async (request: NextRequest) => {
     )
   }
   try {
-    const productId = await productService.createProduct({
+    const product = await productService.createProduct({
       ...data,
       userId: user.userId,
     })
+    revalidateDbCache({
+      tag: CACHE_TAGS.products,
+      userId: user.userId,
+      id: product?.productId,
+    })
     return NextResponse.json(
-      { message: 'Product created', productId },
+      { message: 'Product created', productId: product?.productId },
       { status: 200 }
     )
   } catch (err) {

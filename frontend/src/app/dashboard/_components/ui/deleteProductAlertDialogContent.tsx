@@ -10,14 +10,10 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { toast } from 'sonner'
-import { fetchData } from '@/utils/others/fetchData'
-import { deleteProductApi } from '@/constants/api'
-import { DeleteProductBody } from '@/types/api'
 import { useTransition } from 'react'
-
+import { deleteProductAction } from '@/app/server/product'
 export const DeleteProductAlertDialogContent = ({ id }: { id: string }) => {
   const [isDeletePending, startDeleteTransition] = useTransition()
-
   return (
     <AlertDialogContent>
       <AlertDialogHeader>
@@ -32,13 +28,7 @@ export const DeleteProductAlertDialogContent = ({ id }: { id: string }) => {
         <AlertDialogAction
           onClick={() => {
             startDeleteTransition(async () => {
-              const response = await fetchData<DeleteProductBody>(
-                `${deleteProductApi}/${id}`,
-                {
-                  method: 'POST',
-                }
-              )
-              const data = response.body
+              const data = await deleteProductAction(id)
               if (data.message) {
                 toast(data.error ? 'Error' : 'Success', {
                   description: data.message,

@@ -14,6 +14,11 @@ const cspHeader = `
 
 const nextConfig: NextConfig = {
   /* config options here */
+  experimental: {
+    staleTimes: {
+      dynamic: 0,
+    },
+  },
   async headers() {
     return [
       {

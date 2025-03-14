@@ -1,4 +1,3 @@
-import { productService } from '@/utils/services/db/products'
 import { getUser } from '@/utils/auth/getUser'
 import { redirect } from 'next/navigation'
 import {
@@ -11,13 +10,15 @@ import Link from 'next/link'
 import { ArrowRightIcon, PlusIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ProductGrid } from './_components/ui/productGrid'
+import { getCachedProducts } from '@/utils/auth/cacheFunctions'
+
 const DashboardPage = async () => {
   const user = await getUser()
   if (!user) {
     redirect(signInLink)
   }
   const id = user.userId
-  const products = await productService.getProducts(id)
+  const products = await getCachedProducts(id, { limit: 6 })
   if (products.length === 0) {
     return <NoProducts />
   }
