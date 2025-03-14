@@ -63,7 +63,6 @@ const renewTokens = async (refreshToken?: string) => {
       return { isAuthenticated: false, newTokens: null }
     }
     await JWTUtil.verifyRefreshToken(refreshToken)
-
     const response = await fetchHashToken(refreshToken)
     const { body } = response
     const hashedRefreshToken = body.token
@@ -84,6 +83,7 @@ const renewTokens = async (refreshToken?: string) => {
 
     cookieUtil.clearCookie(cookieStore)
     cookieUtil.saveCookie([newAccessToken, newRefreshToken], cookieStore)
+
     return {
       isAuthenticated: true,
       newTokens: { accessToken: newAccessToken, refreshToken: newRefreshToken },

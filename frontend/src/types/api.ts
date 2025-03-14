@@ -51,3 +51,16 @@ export type UserSessionBody = {
     userId?: string
   }
 }
+export type CreateProductBody = {
+  error?: string
+  message?: string
+  productId?: string
+}
+export type UpdateProductBody = {
+  error?: string
+  message?: string
+}
+export type DeleteProductBody = {
+  error?: string
+  message?: string
+}

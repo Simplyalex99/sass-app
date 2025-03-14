@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { BUSINESS_EMAIL } from '@/constants/socials'
 import { userAccountService } from '@/utils/services/db/userAccount'
 import { log } from '@/utils/others/log'
-import { RequestOTPSchema } from '@/lib/zod/schemas/requestOtp'
+import { RequestOTPSchema } from '@/lib/zod/schemas/api/requestOtp'
 
 import { RequestOTPBody } from '@/types/api'
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorStatusCodeMessages'
