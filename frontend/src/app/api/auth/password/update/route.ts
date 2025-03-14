@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { PasswordUpdateSchema } from '@/lib/zod/schemas/updatePassword'
+import { PasswordUpdateSchema } from '@/lib/zod/schemas/api/updatePassword'
 
 import { formatSchemaErrorMessages } from '@/helpers/formatSchemaErrorsUtil'
 import { log } from '@/utils/others/log'

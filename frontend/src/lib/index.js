@@ -11,9 +11,15 @@ export { redis } from './upstash/redis'
 export {
   RegisterUserSchema,
   RegisterUserSchemaType,
-} from './zod/schemas/registerUser'
-export { LoginSchema, LoginSchemaType } from './zod/schemas/login'
-export { EmailSchema, EmailSchemaType } from './zod/schemas/email'
-export { AuthSchema, AuthSchemaType } from './zod/schemas/auth'
-export { SendEmailSchema, SendEmailSchemaType } from './zod/schemas/sendEmail'
-export { MagicLinkSchema, MagicLinkSchemaType } from './zod/schemas/magicLink'
+} from './zod/schemas/api/registerUser'
+export { LoginSchema, LoginSchemaType } from './zod/schemas/api/login'
+export { EmailSchema, EmailSchemaType } from './zod/schemas/api/email'
+export { AuthSchema, AuthSchemaType } from './zod/schemas/api/auth'
+export {
+  SendEmailSchema,
+  SendEmailSchemaType,
+} from './zod/schemas/api/sendEmail'
+export {
+  MagicLinkSchema,
+  MagicLinkSchemaType,
+} from './zod/schemas/api/magicLink'

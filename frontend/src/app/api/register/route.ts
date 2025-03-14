@@ -6,7 +6,7 @@ import {
   BUSINESS_EMAIL,
 } from '@/constants'
 
-import { RegisterUserSchema } from '@/lib/zod/schemas/registerUser'
+import { RegisterUserSchema } from '@/lib/zod/schemas/api/registerUser'
 
 import { RegisterUserBody } from '@/types/api'
 import { formatSchemaErrorMessages } from '@/helpers/formatSchemaErrorsUtil'

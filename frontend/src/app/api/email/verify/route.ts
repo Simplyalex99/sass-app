@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { MagicLinkSchema } from '@/lib/zod/schemas/magicLink'
+import { MagicLinkSchema } from '@/lib/zod/schemas/api/magicLink'
 import { userService } from '@/utils/services/db/user'
 import { userAccountService } from '@/utils/services/db/userAccount'
 import { log } from '@/utils/others/log'

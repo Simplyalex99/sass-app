@@ -9,7 +9,7 @@ import {
   createPasswordResetRequest,
 } from '@/utils/tokens/otp'
 import { userService } from '@/utils/services/db/user'
-import { SendEmailSchema } from '@/lib/zod/schemas/sendEmail'
+import { SendEmailSchema } from '@/lib/zod/schemas/api/sendEmail'
 
 import { SendEmailBody } from '@/types/api'
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorStatusCodeMessages'
